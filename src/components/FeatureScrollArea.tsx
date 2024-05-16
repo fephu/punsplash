@@ -17,7 +17,7 @@ const FeatureScrollArea = ({ allFeatures }: FeatureScrollAreaProps) => {
   return (
     <ScrollArea>
       <div className="py-2 flex items-center justify-center gap-8">
-        {allFeatures?.map((feature: any) => (
+        {allFeatures?.map((feature: Feature) => (
           <Link
             key={feature.id}
             href={`/t/${feature.value}`}
