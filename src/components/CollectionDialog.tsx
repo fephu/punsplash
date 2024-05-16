@@ -65,7 +65,7 @@ const CollectionDialog = ({ photoId, userId }: CollectionDialogProps) => {
               className="w-1/2 text-center"
             />
             {collections &&
-              collections.map((collection) => (
+              collections.map((collection: any) => (
                 <CollectionItemDialog
                   key={collection.id}
                   collectionId={collection.id}
