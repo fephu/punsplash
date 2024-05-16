@@ -44,7 +44,7 @@ const Page = async ({ params }: PageProps) => {
         <span className="text-4xl font-semibold">{key}</span>
       </div>
       <ul className="pb-40 grid grid-cols-1 gap-6 divide-y divide-zinc-200 md:grid-cols-2 lg:grid-cols-3">
-        {collections.map((collection) => (
+        {collections.map((collection: any) => (
           <CollectionsItem
             key={collection.id}
             id={collection.id}
