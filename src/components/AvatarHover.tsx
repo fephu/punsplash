@@ -84,7 +84,7 @@ const AvatarHover = ({ userId, className }: AvatarHoverProps) => {
 
             <div className="relative flex items-end gap-2 w-full h-full">
               {photos &&
-                photos.map((photo) => (
+                photos.map((photo: any) => (
                   <div key={photo.id} className="relative w-1/3 h-full">
                     <Image
                       src={photo.url}
