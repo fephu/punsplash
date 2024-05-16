@@ -47,16 +47,17 @@ const Page = async ({ params }: PageProps) => {
       <div className="my-10">
         <span className="text-4xl font-semibold">{key}</span>
       </div>
-      {users.map((user) => (
-        <ul className="pb-40 grid grid-cols-1 gap-6 divide-y divide-zinc-200 md:grid-cols-2 lg:grid-cols-3">
+      <ul className="pb-40 grid grid-cols-1 gap-6 divide-y divide-zinc-200 md:grid-cols-2 lg:grid-cols-3">
+        {users.map((user) => (
           <UserBox
+            key={user.id}
             userId={user.id}
             image={user.image ?? ""}
             name={user.name ?? ""}
             username={user.username ?? ""}
           />
-        </ul>
-      ))}
+        ))}
+      </ul>
       <Button variant={"outline"} className="w-full" size={"lg"}>
         Load more
       </Button>
