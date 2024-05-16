@@ -52,9 +52,6 @@ const TagsInput = ({ photoId }: TagsInputProps) => {
 
             const value = (e.target as HTMLInputElement).value;
             if (!value.trim()) return;
-            if (e.key === "Enter") {
-              setTags([...tags, value]);
-            }
             (e.target as HTMLInputElement).value = "";
           }}
         />
