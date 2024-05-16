@@ -29,7 +29,7 @@ const Page = async ({ params }: PageProps) => {
             <Ghost className="h-8 w-8 text-zinc-800" />
             <h3 className="font-semibold text-xl">Pretty empty around here</h3>
             <p>
-              Sorry, we couldn't find any matches for{" "}
+              Sorry, we couldn&apos;t find any matches for{" "}
               <span className="text-green-600 font-medium">{params.key}</span>.
             </p>
           </div>

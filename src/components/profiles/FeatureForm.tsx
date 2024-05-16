@@ -49,7 +49,10 @@ const FeatureForm = ({ photoId }: FeatureFormProps) => {
         <div className="flex items-center gap-2">
           {isLoading && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}
           {features?.map((feature, i) => (
-            <div className="border text-base rounded-md px-2 py-1 flex items-center">
+            <div
+              key={feature.id}
+              className="border text-base rounded-md px-2 py-1 flex items-center"
+            >
               {feature.name}
               <X
                 className="w-2.5 h-2.5 ml-1.5 hover:cursor-pointer"
@@ -90,6 +93,7 @@ const FeatureForm = ({ photoId }: FeatureFormProps) => {
                 {allFeatures &&
                   allFeatures.map((feature) => (
                     <Button
+                      key={feature.id}
                       variant={"ghost"}
                       onClick={() =>
                         addFeature({ photoId, featureId: feature.id })

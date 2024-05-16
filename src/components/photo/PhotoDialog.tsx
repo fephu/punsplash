@@ -182,6 +182,7 @@ const PhotoDialog = ({ photoId, isOwn }: PhotoDialogProps) => {
         {tags &&
           tags.map((tag) => (
             <Link
+              key={tag.keyword}
               href={"/"}
               className={buttonVariants({
                 variant: "outline",

@@ -32,7 +32,10 @@ const TagsInput = ({ photoId }: TagsInputProps) => {
       <div className="flex items-center py-1 border border-gray-200 rounded-md shadow-sm w-full">
         <div className="flex items-center gap-2 ml-2">
           {tags?.map((tag, i) => (
-            <div className="border text-base rounded-md px-2 py-1 flex items-center">
+            <div
+              key={tag}
+              className="border text-base rounded-md px-2 py-1 flex items-center"
+            >
               {tag}
               <X className="w-2.5 h-2.5 ml-1.5" onClick={() => removeTag(i)} />
             </div>

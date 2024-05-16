@@ -169,7 +169,7 @@ const HiringSettings = ({ userId }: HiringSettingsProps) => {
                 <Checkbox checked={isHired} onCheckedChange={onChange} />
                 <label className="text-base font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                   Yes, feature my Punplash profile on hiring pages and display a
-                  'Hire' button
+                  &apos;Hire&apos; button
                 </label>
               </div>
               <Button size={"sm"}>Hire</Button>

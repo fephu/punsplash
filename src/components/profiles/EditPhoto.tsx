@@ -353,7 +353,7 @@ const EditPhoto = ({ photoId }: EditPhotoProps) => {
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button variant={"destructive"}>
-                        I'd like to delete this image
+                        I&apos;d like to delete this image
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
