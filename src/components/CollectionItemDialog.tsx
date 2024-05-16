@@ -42,7 +42,7 @@ const CollectionItemDialog = ({
     });
 
   const isChosen = (collectionId: string) => {
-    return !!collected?.find((f) => f.collectionId === collectionId);
+    return !!collected?.find((f: any) => f.collectionId === collectionId);
   };
 
   return (
