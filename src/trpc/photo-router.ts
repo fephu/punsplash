@@ -129,20 +129,6 @@ export const photoRouter = router({
       const keyword = photos?.Keyword.map((keyword) => ({
         keyword: keyword.keyword,
       }));
-
-      const newTags = [...keyword, tags.map((tag) => ({ keyword: tag }))];
-
-      // await db.photo.update({
-      //   where: {
-      //     id: photoId,
-      //   },
-      //   data: {
-      //     Keyword: {
-      //       set: newTags,
-      //     },
-      //   },
-      // });
-      console.log(newTags);
     }),
   addFeatureToPhoto: publicProcedure
     .input(z.object({ photoId: z.string(), featureId: z.string() }))
