@@ -48,7 +48,7 @@ const Page = async ({ params }: PageProps) => {
         <span className="text-4xl font-semibold">{key}</span>
       </div>
       <ul className="pb-40 grid grid-cols-1 gap-6 divide-y divide-zinc-200 md:grid-cols-2 lg:grid-cols-3">
-        {users.map((user) => (
+        {users.map((user: any) => (
           <UserBox
             key={user.id}
             userId={user.id}
