@@ -31,7 +31,7 @@ const TagsInput = ({ photoId }: TagsInputProps) => {
     <>
       <div className="flex items-center py-1 border border-gray-200 rounded-md shadow-sm w-full">
         <div className="flex items-center gap-2 ml-2">
-          {tags?.map((tag, i) => (
+          {tags?.map((tag: string, i: number) => (
             <div
               key={tag}
               className="border text-base rounded-md px-2 py-1 flex items-center"

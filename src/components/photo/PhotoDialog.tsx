@@ -180,7 +180,7 @@ const PhotoDialog = ({ photoId, isOwn }: PhotoDialogProps) => {
 
       <div className="mt-12 w-full">
         {tags &&
-          tags.map((tag) => (
+          tags.map((tag: any) => (
             <Link
               key={tag.keyword}
               href={"/"}
@@ -198,7 +198,7 @@ const PhotoDialog = ({ photoId, isOwn }: PhotoDialogProps) => {
         <span className="text-2xl font-semibold">Related images</span>
         {photos && photos.length !== 0 ? (
           <ul className="columns-1 md:columns-2 xl:columns-3 gap-6 mt-2 pb-40">
-            {photos.map((photo) => (
+            {photos.map((photo: any) => (
               <li
                 key={photo.id}
                 className="relative mb-4 card__article transition-all overflow-hidden break-inside-avoid group hover:brightness-95"

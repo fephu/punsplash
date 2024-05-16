@@ -31,7 +31,7 @@ const CollectionsSection = ({ user, isOwn }: CollectionsSectionProps) => {
       )}
       {allCollections && allCollections.length !== 0 ? (
         <ul className="mt-8 pb-40 grid grid-cols-1 gap-6 divide-y divide-zinc-200 md:grid-cols-2 lg:grid-cols-3">
-          {allCollections.map((collection) => {
+          {allCollections.map((collection: any) => {
             if (!collection.isPrivate || isOwn) {
               return (
                 <CollectionsItem

@@ -30,7 +30,7 @@ const CardCollections = ({ collections }: CardCollectionsProps) => {
       </CardHeader>
       <CardContent className="flex flex-col gap-1 p-2 pt-0">
         {collections &&
-          collections.map((collection) => (
+          collections.map((collection: any) => (
             <CardCollectionsItem
               key={collection.id}
               collectionId={collection.id}
