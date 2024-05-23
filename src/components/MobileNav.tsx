@@ -6,13 +6,16 @@ import { useState } from "react";
 import UploadDialog from "./UploadDialog";
 import UserProfile from "./auth/UserProfile";
 import { trpc } from "@/app/_trpc/client";
+import { getUserSubscriptionPlan } from "@/lib/stripe";
 
 const MobileNav = ({
   isAuth,
   username,
+  subscriptionPlan,
 }: {
   isAuth: string;
   username: string;
+  subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>;
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -60,6 +63,7 @@ const MobileNav = ({
               <>
                 <li>
                   <UserProfile
+                    subscriptionPlan={subscriptionPlan}
                     image={user.image ?? ""}
                     name={user.name ?? ""}
                     email={user.email ?? ""}

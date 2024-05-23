@@ -35,6 +35,7 @@ const Navbar = async () => {
         <SearchBar />
 
         <MobileNav
+          subscriptionPlan={subscriptionPlan}
           isAuth={session?.user.id ?? ""}
           username={user?.username ?? ""}
         />
