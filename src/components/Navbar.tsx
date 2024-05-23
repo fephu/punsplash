@@ -49,7 +49,12 @@ const Navbar = async () => {
           {session?.user ? (
             <>
               <UploadDialog username={session.user.username ?? ""} />
-              <UserProfile user={user} />
+              <UserProfile
+                name={user?.name ?? ""}
+                email={user?.email ?? ""}
+                image={user?.image ?? ""}
+                username={user?.username ?? ""}
+              />
             </>
           ) : (
             <>
