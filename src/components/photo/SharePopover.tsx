@@ -1,3 +1,5 @@
+"use client";
+
 import { Copy, Facebook, Forward, Share } from "lucide-react";
 import { Button, buttonVariants } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -16,8 +18,6 @@ import { absoluteUrl } from "@/lib/utils";
 
 const SharePopover = () => {
   const url = usePathname();
-
-  console.log(absoluteUrl(url));
 
   const copylink = () => {
     navigator.clipboard.writeText(absoluteUrl(url));
