@@ -55,6 +55,7 @@ export const photoRouter = router({
         aperture: z.string(),
         iso: z.string(),
         speed: z.string(),
+        country: z.string(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -67,7 +68,13 @@ export const photoRouter = router({
         aperture,
         iso,
         speed,
+        country,
       } = input;
+
+      const splitCountry = country.split(", ");
+
+      const city = splitCountry[0];
+      const c = splitCountry[1];
 
       const { userId } = ctx;
 
@@ -84,6 +91,8 @@ export const photoRouter = router({
           exif_aperture_value: parseFloat(aperture),
           exif_iso: parseInt(iso),
           exif_exposure_time: speed,
+          photo_location_city: city,
+          photo_location_country: c,
         },
       });
 
@@ -109,26 +118,45 @@ export const photoRouter = router({
   addTags: privateProcedure
     .input(
       z.object({
-        tags: z.string().array(),
+        tag: z.string(),
         photoId: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       const { userId } = ctx;
-      const { tags, photoId } = input;
+      const { tag, photoId } = input;
 
-      const photos = await db.photo.findUnique({
-        select: {
-          Keyword: true,
-        },
-        where: {
-          id: photoId,
+      await db.keyword.create({
+        data: {
+          photoId,
+          keyword: tag,
+          suggestedByUser: true,
         },
       });
 
-      const keyword = photos?.Keyword.map((keyword) => ({
-        keyword: keyword.keyword,
-      }));
+      return { success: true };
+    }),
+  removeTags: privateProcedure
+    .input(
+      z.object({
+        tag: z.string(),
+        photoId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { userId } = ctx;
+      const { tag, photoId } = input;
+
+      await db.keyword.delete({
+        where: {
+          photoId_keyword: {
+            keyword: tag,
+            photoId,
+          },
+        },
+      });
+
+      return { success: true };
     }),
   addFeatureToPhoto: publicProcedure
     .input(z.object({ photoId: z.string(), featureId: z.string() }))

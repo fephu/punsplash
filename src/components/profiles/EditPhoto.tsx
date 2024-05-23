@@ -12,9 +12,9 @@ import Image from "next/image";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
-import { Loader2, LocateIcon, X } from "lucide-react";
+import { Loader2, LocateIcon, MapPin, Search, X } from "lucide-react";
 import SelectCities from "../photo/SelectCities";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import {
   AlertDialog,
@@ -38,12 +38,26 @@ import {
   UpdatePhotoValidators,
 } from "@/lib/validators/update-photo-validators";
 import FeatureForm from "./FeatureForm";
+import { useOnClickOutside } from "@/hooks/use-on-click-outside";
+import { Icons } from "../Icons";
+import { useRouter } from "next/navigation";
 
 interface EditPhotoProps {
   photoId: string;
 }
 
 const EditPhoto = ({ photoId }: EditPhotoProps) => {
+  const { data: tagsPhoto } = trpc.photoRouter.getAllTagsOfPhoto.useQuery({
+    id: photoId,
+  });
+
+  const tags = [] as string[];
+
+  tagsPhoto?.forEach((tag) => {
+    tags.push(tag.keyword);
+  });
+
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selected, setSelected] = useState<string>("details");
 
@@ -69,6 +83,21 @@ const EditPhoto = ({ photoId }: EditPhotoProps) => {
     deleteImage({ id: photo?.id ?? "" });
     setIsOpen(false);
   };
+
+  const [open, setOpen] = useState(false);
+  const [valueCoun, setValueCoun] = useState(
+    !photo?.photo_location_city || !photo?.photo_location_country
+      ? ""
+      : photo?.photo_location_city + ", " + photo?.photo_location_country
+  );
+
+  const [inputValue, setInputValue] = useState("");
+
+  const commandRef = useRef<HTMLDivElement>(null);
+
+  useOnClickOutside(commandRef, () => {
+    setSelected("");
+  });
 
   const {
     register,
@@ -97,8 +126,10 @@ const EditPhoto = ({ photoId }: EditPhotoProps) => {
       aperture,
       iso,
       speed,
+      country: valueCoun,
     });
     setIsOpen(false);
+    reset();
   };
 
   return (
@@ -193,12 +224,241 @@ const EditPhoto = ({ photoId }: EditPhotoProps) => {
                       </p>
                     )}
                   </div>
-                  <div className="flex flex-col gap-1">
+                  <div className="flex flex-col gap-1 relative">
                     <Label className="text-base">Location</Label>
-                    <SelectCities
-                      label={photo?.photo_location_city ?? ""}
-                      country={photo?.photo_location_country ?? ""}
+                    <Input
+                      value={valueCoun}
+                      onClick={() => setOpen(!open)}
+                      className={`bg-white text-sm w-full p-2 flex items-center rounded border ${
+                        !valueCoun && "text-gray-700"
+                      }`}
+                      defaultValue={valueCoun ? valueCoun : "Select Country"}
+                      onChange={(e) => setValueCoun(e.target.value)}
                     />
+
+                    {open && (
+                      <div
+                        className={`absolute bg-white z-50 top-full h-80 overflow-y-auto inset-x-0 shadow rounded-b-md`}
+                      >
+                        <div className="flex items-center sticky top-0 bg-white">
+                          <Search className="w-4 h-4 absolute top-3 left-3" />
+                          <Input
+                            type="text"
+                            value={inputValue}
+                            onChange={(e) =>
+                              setInputValue(e.target.value.toLowerCase())
+                            }
+                            placeholder="Enter country name"
+                            className="placeholder:text-gray-700 p-2 outline-none pl-9 rounded-b-none"
+                          />
+
+                          {inputValue.length > 0 && (
+                            <X
+                              className="w-4 h-4 absolute top-3 right-3"
+                              onClick={() => setInputValue("")}
+                            />
+                          )}
+                        </div>
+
+                        <div
+                          className={`p-2 text-sm flex items-center hover:cursor-pointer hover:bg-gray-200  ${
+                            "tokyo, japan" === valueCoun?.toLowerCase() &&
+                            "bg-gray-200"
+                          } ${
+                            "tokyo, japan".startsWith(inputValue)
+                              ? "block"
+                              : "hidden"
+                          }`}
+                          onClick={() => {
+                            if ("tokyo, japan" !== selected.toLowerCase()) {
+                              setValueCoun("Tokyo, Japan");
+                              setOpen(false);
+                              setInputValue("");
+                            }
+                          }}
+                        >
+                          Tokyo, Japan{" "}
+                          <Icons.japanFlag className="w-3.5 h-3.5 ml-2" />
+                        </div>
+                        <div
+                          className={`p-2 text-sm flex items-center hover:cursor-pointer hover:bg-gray-200 ${
+                            "delhi, india" === valueCoun?.toLowerCase() &&
+                            "bg-gray-200"
+                          } ${
+                            "delhi, india".startsWith(inputValue)
+                              ? "block"
+                              : "hidden"
+                          }`}
+                          onClick={() => {
+                            if ("delhi, india" !== valueCoun.toLowerCase()) {
+                              setValueCoun("Delhi, India");
+                              setOpen(false);
+                              setInputValue("");
+                            }
+                          }}
+                        >
+                          Delhi, India{" "}
+                          <Icons.indiaFlag className="w-3.5 h-3.5 ml-2" />
+                        </div>
+                        <div
+                          className={`p-2 text-sm flex items-center hover:cursor-pointer hover:bg-gray-200 ${
+                            "shanghai, china" === valueCoun?.toLowerCase() &&
+                            "bg-gray-200"
+                          } ${
+                            "shanghai, china".startsWith(inputValue)
+                              ? "block"
+                              : "hidden"
+                          }`}
+                          onClick={() => {
+                            if ("shanghai, china" !== valueCoun.toLowerCase()) {
+                              setValueCoun("Shanghai, China");
+                              setOpen(false);
+                              setInputValue("");
+                            }
+                          }}
+                        >
+                          Shanghai, China{" "}
+                          <Icons.chinaFlag className="w-3.5 h-3.5 ml-2" />
+                        </div>
+                        <div
+                          className={`p-2 text-sm flex items-center hover:cursor-pointer hover:bg-gray-200 ${
+                            "são paulo, brazil" === valueCoun?.toLowerCase() &&
+                            "bg-gray-200"
+                          } ${
+                            "são paulo, brazil".startsWith(inputValue)
+                              ? "block"
+                              : "hidden"
+                          }`}
+                          onClick={() => {
+                            if (
+                              "são paulo, brazil" !== valueCoun.toLowerCase()
+                            ) {
+                              setValueCoun("São Paulo, Brazil");
+                              setOpen(false);
+                              setInputValue("");
+                            }
+                          }}
+                        >
+                          São Paulo, Brazil{" "}
+                          <Icons.brazilFlag className="w-3.5 h-3.5 ml-2" />
+                        </div>
+                        <div
+                          className={`p-2 text-sm flex items-center hover:cursor-pointer hover:bg-gray-200 ${
+                            "mexico city, mexico" ===
+                              valueCoun?.toLowerCase() && "bg-gray-200"
+                          } ${
+                            "mexico city, mexico".startsWith(inputValue)
+                              ? "block"
+                              : "hidden"
+                          }`}
+                          onClick={() => {
+                            if (
+                              "mexico city, mexico" !== valueCoun.toLowerCase()
+                            ) {
+                              setValueCoun("Mexico City, Mexico");
+                              setOpen(false);
+                              setInputValue("");
+                            }
+                          }}
+                        >
+                          Mexico City, Mexico{" "}
+                          <Icons.mexicoFlag className="w-3.5 h-3.5 ml-2" />
+                        </div>
+                        <div
+                          className={`p-2 text-sm flex items-center hover:cursor-pointer hover:bg-gray-200 ${
+                            "osaka, japan" === valueCoun?.toLowerCase() &&
+                            "bg-gray-200"
+                          } ${
+                            "osaka, japan".startsWith(inputValue)
+                              ? "block"
+                              : "hidden"
+                          }`}
+                          onClick={() => {
+                            if ("osaka, japan" !== valueCoun.toLowerCase()) {
+                              setValueCoun("Osaka, Japan");
+                              setOpen(false);
+                              setInputValue("");
+                            }
+                          }}
+                        >
+                          Osaka, Japan{" "}
+                          <Icons.japanFlag className="w-3.5 h-3.5 ml-2" />
+                        </div>
+                        <div
+                          className={`p-2 text-sm flex items-center hover:cursor-pointer hover:bg-gray-200 ${
+                            "Los Angeles, US".toLowerCase() ===
+                              valueCoun?.toLowerCase() && "bg-gray-200"
+                          } ${
+                            "Los Angeles, US"
+                              .toLowerCase()
+                              .startsWith(inputValue)
+                              ? "block"
+                              : "hidden"
+                          }`}
+                          onClick={() => {
+                            if (
+                              "Los Angeles, US".toLowerCase() !==
+                              valueCoun.toLowerCase()
+                            ) {
+                              setValueCoun("Los Angeles, US");
+                              setOpen(false);
+                              setInputValue("");
+                            }
+                          }}
+                        >
+                          Los Angeles, US{" "}
+                          <Icons.usFlag className="w-3.5 h-3.5 ml-2" />
+                        </div>
+                        <div
+                          className={`p-2 text-sm flex items-center hover:cursor-pointer hover:bg-gray-200 ${
+                            "Paris, France".toLowerCase() ===
+                              valueCoun?.toLowerCase() && "bg-gray-200"
+                          } ${
+                            "Paris, France".toLowerCase().startsWith(inputValue)
+                              ? "block"
+                              : "hidden"
+                          }`}
+                          onClick={() => {
+                            if (
+                              "Paris, France".toLowerCase() !==
+                              valueCoun.toLowerCase()
+                            ) {
+                              setValueCoun("Paris, France");
+                              setOpen(false);
+                              setInputValue("");
+                            }
+                          }}
+                        >
+                          Paris, France{" "}
+                          <Icons.franceFlag className="w-3.5 h-3.5 ml-2" />
+                        </div>
+                        <div
+                          className={`p-2 text-sm flex items-center hover:cursor-pointer hover:bg-gray-200 ${
+                            "Ho Chi Minh City, Vietnam".toLowerCase() ===
+                              valueCoun?.toLowerCase() && "bg-gray-200"
+                          } ${
+                            "Ho Chi Minh City, Vietnam"
+                              .toLowerCase()
+                              .startsWith(inputValue)
+                              ? "block"
+                              : "hidden"
+                          }`}
+                          onClick={() => {
+                            if (
+                              "Ho Chi Minh City, Vietnam".toLowerCase() !==
+                              valueCoun.toLowerCase()
+                            ) {
+                              setValueCoun("Ho Chi Minh City, Vietnam");
+                              setOpen(false);
+                              setInputValue("");
+                            }
+                          }}
+                        >
+                          Ho Chi Minh City, Vietnam{" "}
+                          <Icons.vietnamFlag className="w-3.5 h-3.5 ml-2" />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="flex flex-col w-full gap-4">
@@ -321,7 +581,7 @@ const EditPhoto = ({ photoId }: EditPhotoProps) => {
               <>
                 <div className="flex flex-col w-full h-full gap-2 px-4 py-6">
                   <Label className="text-base">Tags</Label>
-                  <TagsInput photoId={photoId} />
+                  <TagsInput photoId={photoId} values={tags} />
                 </div>
               </>
             ) : selected === "feature" ? (

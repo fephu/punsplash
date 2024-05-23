@@ -70,7 +70,7 @@ const Page = async () => {
       <div className="mb-8 mt-16 text-center">
         <div className="mx-auto mb-10 sm:max-w-4xl">
           <h1 className="text-6xl font-bold sm:text-7xl">
-            Upgrade to Punsplash Premium
+            Upgrade to Punsplash+
           </h1>
           <p className="mt-5 text-gray-600 sm:text-lg">
             Whether you&apos;re just trying out our service or need more,

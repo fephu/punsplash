@@ -8,6 +8,7 @@ import { useState } from "react";
 import { trpc } from "@/app/_trpc/client";
 import { toast } from "sonner";
 import { User } from "@prisma/client";
+import { notFound, useRouter } from "next/navigation";
 
 const interestedWork = [
   {
@@ -92,7 +93,10 @@ interface HiringSettingsProps {
 }
 
 const HiringSettings = ({ userId }: HiringSettingsProps) => {
-  const { data: user } = trpc.profileRouter.getUser.useQuery();
+  const { data: user } = trpc.getUserById.useQuery({ userId });
+  const router = useRouter();
+
+  const utils = trpc.useContext();
   const [isHired, setIsHired] = useState<boolean | undefined>(user?.isHired);
 
   const onChange = () => {
@@ -101,6 +105,7 @@ const HiringSettings = ({ userId }: HiringSettingsProps) => {
 
   const { mutate: updateHiring } = trpc.profileRouter.updateHiring.useMutation({
     onSuccess: () => {
+      utils.getUserById.invalidate();
       toast.success("Updated hiring.");
     },
   });
@@ -209,9 +214,8 @@ const HiringSettings = ({ userId }: HiringSettingsProps) => {
                 ))}
               </div>
             </fieldset>
-
             <Button
-              onClick={() => updateHiring({ hire: !isHired })}
+              onClick={() => updateHiring({ hire: !!isHired })}
               className="mt-4 w-full"
             >
               Update hiring availability

@@ -9,23 +9,15 @@ import { Button } from "../ui/button";
 
 interface TagsInputProps {
   photoId: string;
+  values: string[];
 }
 
-const TagsInput = ({ photoId }: TagsInputProps) => {
-  const { data: tagsPhoto } = trpc.photoRouter.getAllTagsOfPhoto.useQuery({
-    id: photoId,
-  });
+const TagsInput = ({ photoId, values }: TagsInputProps) => {
+  const [tags, setTags] = useState(values);
 
-  const flatTag = tagsPhoto && tagsPhoto.map((tag) => tag.keyword);
+  const { mutate: addTags } = trpc.photoRouter.addTags.useMutation({});
 
-  const removeTag = (index: number) => {
-    setTags(tags?.filter((el, i) => i !== index));
-  };
-
-  const [tags, setTags] = useState(flatTag);
-
-  const { mutate: updateTags, isLoading } =
-    trpc.photoRouter.addTags.useMutation({});
+  const { mutate: removeTags } = trpc.photoRouter.removeTags.useMutation({});
 
   return (
     <>
@@ -37,7 +29,13 @@ const TagsInput = ({ photoId }: TagsInputProps) => {
               className="border text-base rounded-md px-2 py-1 flex items-center"
             >
               {tag}
-              <X className="w-2.5 h-2.5 ml-1.5" onClick={() => removeTag(i)} />
+              <X
+                className="w-2.5 h-2.5 ml-1.5"
+                onClick={() => {
+                  removeTags({ photoId, tag });
+                  setTags(tags?.filter((el, index) => index !== i));
+                }}
+              />
             </div>
           ))}
         </div>
@@ -46,21 +44,20 @@ const TagsInput = ({ photoId }: TagsInputProps) => {
           type="text"
           className="border-none text-base"
           onKeyDown={(e) => {
-            if (e.key !== "Enter") {
-              return;
-            }
-
             const value = (e.target as HTMLInputElement).value;
-            if (!value.trim()) return;
-            (e.target as HTMLInputElement).value = "";
+            if (
+              (e.key === "," || e.key === "Enter" || e.key === "Tab") &&
+              value.length &&
+              !tags?.includes(value)
+            ) {
+              e.preventDefault();
+              addTags({ photoId, tag: value });
+              (e.target as HTMLInputElement).value = "";
+              setTags((prevTags) => [...prevTags, value]);
+            } else {
+            }
           }}
         />
-      </div>
-      <div className="absolute bottom-8 right-8 flex items-center gap-8">
-        <Button onClick={() => updateTags({ tags: tags ?? [], photoId })}>
-          Update tags
-          {isLoading && <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />}
-        </Button>
       </div>
     </>
   );

@@ -56,7 +56,7 @@ const CollectionDialog = ({ photoId, userId }: CollectionDialogProps) => {
             )}
           </div>
 
-          <div className="flex flex-col h-full p-6 w-3/5 gap-4">
+          <div className="flex flex-col h-full p-6 w-3/5 gap-4 relative">
             <span className="text-center text-3xl font-bold mb-4">
               Add to Collection
             </span>
@@ -64,16 +64,18 @@ const CollectionDialog = ({ photoId, userId }: CollectionDialogProps) => {
               title="Create new a collection"
               className="w-1/2 text-center"
             />
-            {collections &&
-              collections.map((collection: any) => (
-                <CollectionItemDialog
-                  key={collection.id}
-                  collectionId={collection.id}
-                  title={collection.title}
-                  isPrivate={collection.isPrivate}
-                  photoId={photoId}
-                />
-              ))}
+            <div className="absolute top-[30%] bottom-4 left-2 right-2 flex flex-col gap-2 overflow-y-scroll">
+              {collections &&
+                collections.map((collection: any) => (
+                  <CollectionItemDialog
+                    key={collection.id}
+                    collectionId={collection.id}
+                    title={collection.title}
+                    isPrivate={collection.isPrivate}
+                    photoId={photoId}
+                  />
+                ))}
+            </div>
           </div>
         </div>
       </DialogContent>

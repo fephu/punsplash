@@ -33,7 +33,7 @@ const CardCollectionsItem = ({
       {photo && (
         <Avatar className="w-8 h-8 rounded-md">
           {photo[0] && photo[0].url ? (
-            <AvatarImage src={photo[0].url ?? ""} />
+            <AvatarImage src={photo[0].url ?? ""} className="object-cover" />
           ) : (
             <AvatarFallback>
               <span className="sr-only">CN</span>

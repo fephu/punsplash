@@ -73,13 +73,6 @@ const AvatarHover = ({ userId, className }: AvatarHoverProps) => {
                   <span className="text-sm">@{user.username}</span>
                 </div>
               </div>
-
-              <Link
-                href={`/profile/${user.username}`}
-                className={buttonVariants({ variant: "outline" })}
-              >
-                View profile
-              </Link>
             </div>
 
             <div className="relative flex items-end gap-2 w-full h-full">
@@ -95,6 +88,12 @@ const AvatarHover = ({ userId, className }: AvatarHoverProps) => {
                   </div>
                 ))}
             </div>
+            <Link
+              href={`/profile/${user.username}`}
+              className={buttonVariants({ variant: "outline" })}
+            >
+              View profile
+            </Link>
           </div>
         </HoverCardContent>
       </HoverCard>

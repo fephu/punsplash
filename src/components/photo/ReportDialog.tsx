@@ -44,7 +44,7 @@ const ReportDialog = () => {
         <PopoverContent align="end" className="w-28 p-0">
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-              <Button variant={"ghost"}>
+              <Button variant={"ghost"} className="w-full">
                 Report
                 <Flag className="w-3.5 h-3.5 ml-1.5" />
               </Button>

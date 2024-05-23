@@ -49,7 +49,7 @@ const SelectCities = ({ label, country }: SelectCitiesProps) => {
       </div>
       {open && (
         <div
-          className={`absolute bg-white top-full h-80 overflow-y-auto inset-x-0 shadow rounded-b-md`}
+          className={`absolute bg-white z-50 top-full h-80 overflow-y-auto inset-x-0 shadow rounded-b-md`}
         >
           <div className="flex items-center sticky top-0 bg-white">
             <Search className="w-4 h-4 absolute top-3 left-3" />

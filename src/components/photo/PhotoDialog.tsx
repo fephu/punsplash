@@ -40,8 +40,6 @@ interface PhotoDialogProps {
 const PhotoDialog = ({ photoId, isOwn }: PhotoDialogProps) => {
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const { data: photo } = trpc.getPhotoByPhotoId.useQuery({ id: photoId });
-
-  console.log(photo);
   const { data: tags } = trpc.photoRouter.getAllTagsOfPhoto.useQuery({
     id: photoId,
   });

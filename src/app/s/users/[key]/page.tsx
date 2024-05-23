@@ -19,9 +19,28 @@ const Page = async ({ params }: PageProps) => {
 
   const users = await db.user.findMany({
     where: {
-      name: {
-        contains: key,
-      },
+      OR: [
+        {
+          name: {
+            contains: key,
+          },
+        },
+        {
+          location: {
+            contains: key,
+          },
+        },
+        {
+          bio: {
+            contains: key,
+          },
+        },
+        {
+          username: {
+            contains: key,
+          },
+        },
+      ],
     },
   });
 

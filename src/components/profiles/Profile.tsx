@@ -22,6 +22,7 @@ import Skeleton from "react-loading-skeleton";
 import { Button, buttonVariants } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { User } from "@prisma/client";
+import ConnectWith from "./ConnectWith";
 
 interface ProfileProps {
   children: React.ReactNode;
@@ -64,7 +65,7 @@ const Profile = ({ children, user, userId }: ProfileProps) => {
             </AvatarFallback>
           )}
         </Avatar>
-        <div className="flex flex-col gap-2 px-0 md:px-2">
+        <div className="flex flex-col items-start gap-2 px-0 md:px-2">
           <div className="flex items-center gap-2">
             <span className="text-4xl font-semibold mr-4">{user?.name}</span>
             {user?.isHired && user.id !== userId && (
@@ -80,48 +81,57 @@ const Profile = ({ children, user, userId }: ProfileProps) => {
               </Link>
             )}
           </div>
-          {user?.bio && <span className="my-4">{user?.bio}</span>}
+          {user?.bio && <span className="my-2">{user?.bio}</span>}
 
           {user?.isHired ? (
             <div className="flex items-center text-green-700">
               <CircleCheck className="w-4 h-4 mr-1.5" />
               Available for hire{" "}
-              <Link
-                href={"/account/hiring"}
-                className={buttonVariants({
-                  variant: "link",
-                  size: "sm",
-                  className: "underline",
-                })}
-              >
-                Update
-              </Link>
+              {userId && (
+                <Link
+                  href={"/account/hiring"}
+                  className={buttonVariants({
+                    variant: "link",
+                    size: "sm",
+                    className: "underline",
+                  })}
+                >
+                  Update
+                </Link>
+              )}
             </div>
           ) : (
             <div className="flex items-center">
               <CircleX className="w-4 h-4 mr-1.5" />
               Not available for hire{" "}
-              <Link
-                href={"/account/hiring"}
-                className={buttonVariants({
-                  variant: "link",
-                  size: "sm",
-                  className: "underline",
-                })}
-              >
-                Update
-              </Link>
+              {userId && (
+                <Link
+                  href={"/account/hiring"}
+                  className={buttonVariants({
+                    variant: "link",
+                    size: "sm",
+                    className: "underline",
+                  })}
+                >
+                  Update
+                </Link>
+              )}
             </div>
           )}
 
           {user?.location && (
-            <Link
-              href={"/"}
-              className="flex items-center gap-2 text-gray-600 hover:text-black"
-            >
+            <Link href={"/"} className="flex items-center gap-2 mt-6">
               <MapPin className="w-4 h-4" />
               {user?.location}
             </Link>
+          )}
+          {(user?.insUsername || user?.portfolio || user?.xUsername) && (
+            <ConnectWith
+              username={user.username ?? ""}
+              insUsername={user.insUsername ?? ""}
+              xUsername={user.xUsername ?? ""}
+              portfolio={user.portfolio ?? ""}
+            />
           )}
         </div>
       </div>
@@ -134,7 +144,7 @@ const Profile = ({ children, user, userId }: ProfileProps) => {
         >
           <ImageIcon className="w-4 h-4 mr-2" />
           Images
-          <span className="ml-1.5">{countOfPhoto}</span>
+          <span className="ml-1.5 hidden md:block">{countOfPhoto}</span>
         </Link>
         <Link
           href={`/profile/${user?.username}/likes`}
@@ -144,7 +154,7 @@ const Profile = ({ children, user, userId }: ProfileProps) => {
         >
           <Heart className="w-4 h-4 mr-2" />
           Likes
-          <span className="ml-1.5">{countOfLikesPhoto}</span>
+          <span className="ml-1.5 hidden md:block">{countOfLikesPhoto}</span>
         </Link>
         <Link
           href={`/profile/${user?.username}/collections`}
@@ -154,17 +164,19 @@ const Profile = ({ children, user, userId }: ProfileProps) => {
         >
           <Folder className="w-4 h-4 mr-2" />
           Collections
-          <span className="ml-1.5">{countOfCollections}</span>
+          <span className="ml-1.5 hidden md:block">{countOfCollections}</span>
         </Link>
-        <Link
-          href={`/profile/${user?.username}/stats`}
-          className={buttonVariants({
-            variant: "ghost",
-          })}
-        >
-          <BarChart2 className="w-4 h-4 mr-2" />
-          Stats
-        </Link>
+        {userId && (
+          <Link
+            href={`/profile/${user?.username}/stats`}
+            className={buttonVariants({
+              variant: "ghost",
+            })}
+          >
+            <BarChart2 className="w-4 h-4 mr-2" />
+            Stats
+          </Link>
+        )}
       </div>
       {children}
     </>

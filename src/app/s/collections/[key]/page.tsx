@@ -15,9 +15,18 @@ const Page = async ({ params }: PageProps) => {
 
   const collections = await db.collection.findMany({
     where: {
-      title: {
-        contains: key,
-      },
+      OR: [
+        {
+          title: {
+            contains: key,
+          },
+        },
+        {
+          subtitle: {
+            contains: key,
+          },
+        },
+      ],
     },
   });
 

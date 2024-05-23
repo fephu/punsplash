@@ -57,6 +57,7 @@
     "react-tagsinput": "^3.20.3",
     "sass": "^1.75.0",
     "sonner": "^1.4.41",
+    "stripe": "^15.7.0",
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
     "uploadthing": "^6.9.0",
