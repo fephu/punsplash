@@ -12,7 +12,7 @@ const CloseButton = () => {
       size={"sm"}
       variant={"ghost"}
       onClick={() => router.back()}
-      className="sticky top-0 z-50 text-white hover:bg-black/60 hover:text-gray-200"
+      className="sticky top-0 z-50 text-white hover:bg-black/80 hover:text-gray-200"
     >
       <X className="w-6 h-6" />
     </Button>

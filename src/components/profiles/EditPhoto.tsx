@@ -566,9 +566,6 @@ const EditPhoto = ({ photoId }: EditPhotoProps) => {
                 </div>
 
                 <div className="absolute bottom-8 right-8 flex items-center gap-8">
-                  <Button variant={"outline"} onClick={() => setIsOpen(false)}>
-                    Cancel
-                  </Button>
                   <Button type="submit">
                     Update details
                     {isLoading && (

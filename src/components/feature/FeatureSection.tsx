@@ -7,19 +7,25 @@ import { trpc } from "@/app/_trpc/client";
 import Link from "next/link";
 import ToolBar from "../ToolBar";
 import AvatarHover from "../AvatarHover";
-import { Button } from "../ui/button";
-import { Download, Ghost } from "lucide-react";
+import { Button, buttonVariants } from "../ui/button";
+import { ArrowDown, Download, Ghost, Lock } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 import { saveAs } from "file-saver";
 import { useState } from "react";
 import MaxWidthWrapper from "../MaxWidthWrapper";
+import { getUserSubscriptionPlan } from "@/lib/stripe";
 
 interface FeatureSectionProps {
+  subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>;
   feature: Feature | null;
   isOwn: string;
 }
 
-const FeatureSection = ({ feature, isOwn }: FeatureSectionProps) => {
+const FeatureSection = ({
+  feature,
+  isOwn,
+  subscriptionPlan,
+}: FeatureSectionProps) => {
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const { data: photos, isLoading } =
     trpc.featureRouter.getAllPhotoByFeature.useQuery({
@@ -57,7 +63,7 @@ const FeatureSection = ({ feature, isOwn }: FeatureSectionProps) => {
             </h1>
           ) : null}
           {feature?.subtitle ? (
-            <p className="mt-2 text-xs md:text-xl font-light text-white">
+            <p className="mt-2 text-xs md:text-lg font-light text-white">
               {feature.subtitle}
             </p>
           ) : null}
@@ -89,14 +95,24 @@ const FeatureSection = ({ feature, isOwn }: FeatureSectionProps) => {
                 <div className="flex items-center px-4 justify-between absolute bottom-4 w-full opacity-0 card__data">
                   <AvatarHover userId={photo.userId ?? ""} />
 
-                  <Button
-                    onClick={() => download(photo.url, "punsplash")}
-                    variant={"outline"}
-                    size={"sm"}
-                    className="flex items-center gap-1"
-                  >
-                    <Download className="h-4 w-4" />
-                  </Button>
+                  {subscriptionPlan.isSubscribed ? (
+                    <Button
+                      onClick={() => download(photo.url, "punsplash")}
+                      variant={"outline"}
+                      size={"sm"}
+                      className="flex items-center gap-1"
+                    >
+                      <ArrowDown className="h-4 w-4" />
+                    </Button>
+                  ) : (
+                    <Link
+                      href={"/pricing"}
+                      className={buttonVariants({ size: "sm" })}
+                    >
+                      <Lock className="w-4 h-4 mr-1.5" />
+                      Download
+                    </Link>
+                  )}
                 </div>
               </li>
             ))}
@@ -104,7 +120,7 @@ const FeatureSection = ({ feature, isOwn }: FeatureSectionProps) => {
         ) : isLoading ? (
           <Skeleton height={500} width={400} className="my-8 mx-2" inline />
         ) : (
-          <div className="mt-28 flex flex-col items-center gap-2">
+          <div className="my-28 flex flex-col items-center gap-2">
             <Ghost className="h-8 w-8 text-zinc-800" />
             <h3 className="font-semibold text-xl">Pretty empty around here</h3>
             <p>Let&apos;s upload your first photo.</p>

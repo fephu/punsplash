@@ -19,9 +19,10 @@ const CardCollectionsItem = ({
   url,
   userId,
 }: CardCollectionsItemProps) => {
-  const { data: photo } = trpc.collectionRouter.getThirdPhoto.useQuery({
-    id: collectionId,
-  });
+  const { data: photo, isLoading } =
+    trpc.collectionRouter.getThirdPhoto.useQuery({
+      id: collectionId,
+    });
 
   const { data: user } = trpc.getUserById.useQuery({ userId });
 
@@ -30,6 +31,13 @@ const CardCollectionsItem = ({
       href={`/collection/${collectionId}`}
       className="flex items-center px-3 py-1.5 rounded-lg hover:bg-neutral-100"
     >
+      {isLoading && (
+        <Avatar className="w-8 h-8 rounded-md">
+          <AvatarFallback>
+            <span className="sr-only">CN</span>
+          </AvatarFallback>
+        </Avatar>
+      )}
       {photo && (
         <Avatar className="w-8 h-8 rounded-md">
           {photo[0] && photo[0].url ? (

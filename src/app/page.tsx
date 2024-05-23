@@ -7,12 +7,15 @@ import CardCollections from "@/components/collection/CardCollections";
 import ImagesSection from "@/components/profiles/ImagesSection";
 import { db } from "@/db";
 import { getAuthSession } from "@/lib/auth";
+import { getUserSubscriptionPlan } from "@/lib/stripe";
 
 export default async function Home() {
   const session = await getAuthSession();
   const userId = session?.user.id;
 
   const allFeatures = await db.feature.findMany({});
+
+  const subscriptionPlan = await getUserSubscriptionPlan();
 
   const collectionsByRandom = await db.collection.findMany({
     take: 4,
@@ -28,15 +31,17 @@ export default async function Home() {
       </div>
 
       <MaxWidthWrapper>
-        <div className="mt-20 flex items-center gap-8 justify-between">
-          <div className="hidden md:flex flex-col justify-end gap-4 w-full">
+        <div className="mt-20 flex flex-col md:flex-row items-start md:items-center gap-8">
+          <div className="flex flex-col justify-end gap-4 w-full">
             <span className="text-5xl font-bold">Punsplash</span>
-            <span className="max-w-prose text-zinc-900 sm:text-lg">
+            <span className="hidden md:block max-w-prose text-zinc-900 sm:text-lg">
               The internet’s source for visuals.
               <br />
               Powered by creators everywhere.
             </span>
-            <SearchBar />
+            <div className="hidden md:block">
+              <SearchBar />
+            </div>
           </div>
 
           <div className="flex items-center gap-8">
@@ -46,7 +51,7 @@ export default async function Home() {
             <Poster />
           </div>
         </div>
-        <PhotoOnHome isOwn={userId ?? ""} />
+        <PhotoOnHome isOwn={userId ?? ""} subscriptionPlan={subscriptionPlan} />
       </MaxWidthWrapper>
     </>
   );

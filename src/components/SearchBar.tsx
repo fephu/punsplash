@@ -1,14 +1,6 @@
 "use client";
 
-import { ScanSearch, Search, X } from "lucide-react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "./ui/command";
+import { Eraser, Loader2, ScanSearch, Search, X } from "lucide-react";
 import { useCallback, useRef, useState, useTransition } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -20,9 +12,11 @@ const SearchBar = () => {
   const [query, setQuery] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
   const [isSearching, startTransition] = useTransition();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const search = () => {
     startTransition(() => {
+      window.localStorage.setItem("recentSearches", JSON.stringify([query]));
       router.push(`/s/photos/${query.replace(/\s/g, "-")}`);
     });
   };
@@ -38,9 +32,11 @@ const SearchBar = () => {
               search();
             }
             if (e.key === "Escape") {
+              setIsOpen(false);
               inputRef?.current?.blur();
             }
           }}
+          onClick={() => setIsOpen(!isOpen)}
           ref={inputRef}
           className="absolute inset-0 h-full pl-9"
           placeholder="Search high-resolution images"
@@ -50,14 +46,45 @@ const SearchBar = () => {
         </div>
         {query.length > 0 && (
           <Button
+            disabled={isSearching}
             className="absolute top-1 right-10"
             size={"sm"}
             variant={"ghost"}
             onClick={() => setQuery("")}
           >
-            <X className="w-3 h-3" />
+            {isSearching ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <X className="w-3 h-3" />
+            )}
           </Button>
         )}
+
+        {isOpen && (
+          <div className="absolute bg-white top-[110%] w-full rounded-md">
+            <div className="flex flex-col px-6 pt-2 pb-4 gap-4">
+              <div className="flex flex-col">
+                <div className="flex items-center">
+                  <span>Recent Searches</span>
+                  <Button variant={"ghost"} size={"sm"}>
+                    Clear
+                    <Eraser className="w-4 h-4 ml-1" />
+                  </Button>
+                </div>
+              </div>
+              <div className="flex flex-col">
+                <span>Trending Searches</span>
+              </div>
+              <div className="flex flex-col">
+                <span>Trending Topics</span>
+              </div>
+              <div className="flex flex-col">
+                <span>Trending Collections</span>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="hidden lg:block">
           <VisualSearch />
         </div>

@@ -10,13 +10,16 @@ import {
 } from "@/components/ui/tooltip";
 import { PLANS } from "@/config/stripe";
 import { getAuthSession } from "@/lib/auth";
+import { getUserSubscriptionPlan } from "@/lib/stripe";
 import { cn } from "@/lib/utils";
-import { ArrowRight, Check, HelpCircle, Minus } from "lucide-react";
+import { ArrowRight, Check, HelpCircle, Minus, Twitter } from "lucide-react";
 import Link from "next/link";
 
 const Page = async () => {
   const session = await getAuthSession();
   const user = session?.user;
+
+  const subscriptionPlan = await getUserSubscriptionPlan();
 
   const pricingItems = [
     {
@@ -168,17 +171,25 @@ const Page = async () => {
                   <div className="p-5">
                     {plan === "Free" ? (
                       <Link
-                        href={user ? "/dashboard" : "/sign-in"}
+                        href={user ? `/profile/${user.username}` : "/sign-in"}
                         className={buttonVariants({
                           className: "w-full",
                           variant: "secondary",
                         })}
                       >
-                        {user ? "Go to dashboard" : "Sign in"}
+                        {user ? "Go to Profile" : "Sign in"}
                         <ArrowRight className="h-5 w-5 ml-1.5" />
                       </Link>
-                    ) : user ? (
+                    ) : user && !subscriptionPlan.isSubscribed ? (
                       <UpgradeButton />
+                    ) : user && subscriptionPlan.isSubscribed ? (
+                      <Link
+                        href={"billing"}
+                        className={buttonVariants({ className: "w-full" })}
+                      >
+                        Manage Subscription
+                        <ArrowRight className="h-5 w-5 ml-1.5" />
+                      </Link>
                     ) : (
                       <Link
                         href={"/sign-in"}
@@ -222,7 +233,7 @@ const Page = async () => {
           </ul>
           <div className="flex items-center gap-6">
             <Link href={"/"}>
-              <Icons.X className="w-6 h-6" />
+              <Twitter className="w-6 h-6" />
             </Link>
             <Link href={"/"}>
               <Icons.facebook className="w-6 h-6" />

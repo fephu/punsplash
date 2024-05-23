@@ -14,15 +14,24 @@ import { Icons } from "../Icons";
 import { signOut } from "next-auth/react";
 import { User } from "@prisma/client";
 import { Button } from "../ui/button";
+import { Gem } from "lucide-react";
+import { getUserSubscriptionPlan } from "@/lib/stripe";
 
 interface UserProfileProps {
   image: string;
   name: string;
   email: string;
   username: string;
+  subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>;
 }
 
-const UserProfile = ({ image, name, email, username }: UserProfileProps) => {
+const UserProfile = async ({
+  image,
+  name,
+  email,
+  username,
+  subscriptionPlan,
+}: UserProfileProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -67,10 +76,20 @@ const UserProfile = ({ image, name, email, username }: UserProfileProps) => {
           <Link href="/account">Account settings</Link>
         </DropdownMenuItem>
 
+        <DropdownMenuItem asChild>
+          {subscriptionPlan?.isSubscribed ? (
+            <Link href="/billing">Manage Subscription</Link>
+          ) : (
+            <Link href="/pricing">
+              Upgrade <Gem className="text-blue-600 h-4 w-4 ml-1.5" />
+            </Link>
+          )}
+        </DropdownMenuItem>
+
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
-          onClick={(event: any) => {
+          onSelect={(event) => {
             event.preventDefault();
             signOut({
               callbackUrl: `${window.location.origin}/sign-in`,

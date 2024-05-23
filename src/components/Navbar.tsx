@@ -7,6 +7,7 @@ import UserProfile from "./auth/UserProfile";
 import { db } from "@/db";
 import UploadDialog from "./UploadDialog";
 import MobileNav from "./MobileNav";
+import { getUserSubscriptionPlan } from "@/lib/stripe";
 
 const Navbar = async () => {
   const session = await getAuthSession();
@@ -15,6 +16,8 @@ const Navbar = async () => {
       id: session?.user.id,
     },
   });
+
+  const subscriptionPlan = await getUserSubscriptionPlan();
 
   return (
     <div className="fixed top-0 inset-x-0 h-fit bg-zinc-100 border-b border-zinc-300 z-[50] py-2">
@@ -54,6 +57,7 @@ const Navbar = async () => {
                 email={user?.email ?? ""}
                 image={user?.image ?? ""}
                 username={user?.username ?? ""}
+                subscriptionPlan={subscriptionPlan}
               />
             </>
           ) : (

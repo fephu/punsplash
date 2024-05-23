@@ -5,18 +5,20 @@ import Link from "next/link";
 import EditPhoto from "./profiles/EditPhoto";
 import ToolBar from "./ToolBar";
 import AvatarHover from "./AvatarHover";
-import { Button } from "./ui/button";
-import { Download, Ghost } from "lucide-react";
+import { Button, buttonVariants } from "./ui/button";
+import { ArrowDown, Download, Ghost, Lock } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 import { trpc } from "@/app/_trpc/client";
 import { saveAs } from "file-saver";
 import { useState } from "react";
+import { getUserSubscriptionPlan } from "@/lib/stripe";
 
 interface PhotoOnHomeProps {
+  subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>;
   isOwn: string;
 }
 
-const PhotoOnHome = ({ isOwn }: PhotoOnHomeProps) => {
+const PhotoOnHome = ({ isOwn, subscriptionPlan }: PhotoOnHomeProps) => {
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const { data: photos, isLoading } =
     trpc.getAllPhotosOrderByStatDownloads.useQuery();
@@ -63,14 +65,24 @@ const PhotoOnHome = ({ isOwn }: PhotoOnHomeProps) => {
                   className="text-white"
                 />
 
-                <Button
-                  onClick={() => download(photo.url, "punsplash")}
-                  variant={"outline"}
-                  size={"sm"}
-                  className="flex items-center gap-1"
-                >
-                  <Download className="h-4 w-4" />
-                </Button>
+                {subscriptionPlan.isSubscribed ? (
+                  <Button
+                    onClick={() => download(photo.url, "punsplash")}
+                    variant={"outline"}
+                    size={"sm"}
+                    className="flex items-center gap-1"
+                  >
+                    <ArrowDown className="h-4 w-4" />
+                  </Button>
+                ) : (
+                  <Link
+                    href={"/pricing"}
+                    className={buttonVariants({ size: "sm" })}
+                  >
+                    <Lock className="w-4 h-4 mr-1.5" />
+                    Download
+                  </Link>
+                )}
               </div>
             </li>
           ))}

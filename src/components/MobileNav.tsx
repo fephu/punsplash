@@ -4,13 +4,8 @@ import { ArrowRight, ChevronRight, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import UploadDialog from "./UploadDialog";
-import { buttonVariants } from "./ui/button";
 import UserProfile from "./auth/UserProfile";
 import { trpc } from "@/app/_trpc/client";
-import Image from "next/image";
-import { Avatar, AvatarFallback } from "./ui/avatar";
-import { Icons } from "./Icons";
-import { cn } from "@/lib/utils";
 
 const MobileNav = ({
   isAuth,

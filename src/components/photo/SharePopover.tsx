@@ -12,10 +12,15 @@ import {
 import { usePathname } from "next/navigation";
 import { Separator } from "../ui/separator";
 import { toast } from "sonner";
+import { absoluteUrl } from "@/lib/utils";
 
 const SharePopover = () => {
+  const url = usePathname();
+
+  console.log(absoluteUrl(url));
+
   const copylink = () => {
-    navigator.clipboard.writeText("Hello");
+    navigator.clipboard.writeText(absoluteUrl(url));
     toast.success("Copied.");
   };
 

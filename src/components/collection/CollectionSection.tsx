@@ -2,11 +2,11 @@
 
 import { trpc } from "@/app/_trpc/client";
 import { User } from "@prisma/client";
-import { Download, Forward, Ghost, Lock } from "lucide-react";
+import { ArrowDown, Download, Forward, Ghost, Lock } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 import CollectionsItem from "../profiles/CollectionsItem";
 import AvatarHover from "../AvatarHover";
-import { Button } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
 import Link from "next/link";
 import Image from "next/image";
 import EditPhoto from "../profiles/EditPhoto";
@@ -15,17 +15,20 @@ import { saveAs } from "file-saver";
 import { useState } from "react";
 import EditCollection from "./EditCollection";
 import SharePopover from "../photo/SharePopover";
+import { getUserSubscriptionPlan } from "@/lib/stripe";
 
 interface CollectionSectionProps {
   collectionId: string;
   user: User | null;
   isOwn: string;
+  subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>;
 }
 
 const CollectionSection = ({
   user,
   isOwn,
   collectionId,
+  subscriptionPlan,
 }: CollectionSectionProps) => {
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const { data: collection } = trpc.collectionRouter.getCollectionById.useQuery(
@@ -105,14 +108,24 @@ const CollectionSection = ({
                 <div className="flex items-center px-4 justify-between absolute bottom-4 w-full opacity-0 card__data">
                   <AvatarHover userId={photo.userId ?? ""} />
 
-                  <Button
-                    onClick={() => download(photo.url, "punsplash")}
-                    variant={"outline"}
-                    size={"sm"}
-                    className="flex items-center gap-1"
-                  >
-                    <Download className="h-4 w-4" />
-                  </Button>
+                  {subscriptionPlan.isSubscribed || isOwn ? (
+                    <Button
+                      onClick={() => download(photo.url, "punsplash")}
+                      variant={"outline"}
+                      size={"sm"}
+                      className="flex items-center gap-1"
+                    >
+                      <ArrowDown className="h-4 w-4" />
+                    </Button>
+                  ) : (
+                    <Link
+                      href={"/pricing"}
+                      className={buttonVariants({ size: "sm" })}
+                    >
+                      <Lock className="w-4 h-4 mr-1.5" />
+                      Download
+                    </Link>
+                  )}
                 </div>
               </li>
             ))}

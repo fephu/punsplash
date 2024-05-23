@@ -2,6 +2,7 @@
 
 import { trpc } from "@/app/_trpc/client";
 import {
+  ArrowDown,
   Download,
   Ghost,
   Loader2,
@@ -89,7 +90,7 @@ const ImagesSection = ({ user, isOwn }: ImagesSectionProps) => {
                   size={"sm"}
                   className="flex items-center gap-1"
                 >
-                  <Download className="h-4 w-4" />
+                  <ArrowDown className="h-4 w-4" />
                 </Button>
               </div>
             </li>
