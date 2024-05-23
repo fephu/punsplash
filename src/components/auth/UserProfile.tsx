@@ -16,19 +16,22 @@ import { User } from "@prisma/client";
 import { Button } from "../ui/button";
 
 interface UserProfileProps {
-  user: User | null;
+  image: string;
+  name: string;
+  email: string;
+  username: string;
 }
 
-const UserProfile = ({ user }: UserProfileProps) => {
+const UserProfile = ({ image, name, email, username }: UserProfileProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button className="rounded-full h-9 w-9 aspect-square bg-slate-400">
           <Avatar className="relative w-9 h-9">
-            {user?.image ? (
+            {image ? (
               <div className="relative aspect-square h-full w-full">
                 <Image
-                  src={user.image}
+                  src={image}
                   fill
                   alt="Profile Picture"
                   referrerPolicy="no-referrer"
@@ -36,7 +39,7 @@ const UserProfile = ({ user }: UserProfileProps) => {
               </div>
             ) : (
               <AvatarFallback>
-                <span className="sr-only">{user?.name}</span>
+                <span className="sr-only">{name}</span>
                 <Icons.user className="h-4 w-4 text-zinc-900" />
               </AvatarFallback>
             )}
@@ -46,12 +49,10 @@ const UserProfile = ({ user }: UserProfileProps) => {
       <DropdownMenuContent align="end" className="bg-white">
         <div className="flex items-center justify-start gap-2 p-2">
           <div className="flex flex-col space-y-0.5 leading-none">
-            {user?.name && (
-              <p className="font-medium text-sm text-black">{user.name}</p>
-            )}
-            {user?.email && (
+            {name && <p className="font-medium text-sm text-black">{name}</p>}
+            {email && (
               <p className="w-[200px] truncate text-xs text-zinc-700">
-                {user.email}
+                {email}
               </p>
             )}
           </div>
@@ -59,7 +60,7 @@ const UserProfile = ({ user }: UserProfileProps) => {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem asChild>
-          <Link href={`/profile/${user?.username}`}>Profile</Link>
+          <Link href={`/profile/${username}`}>Profile</Link>
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>

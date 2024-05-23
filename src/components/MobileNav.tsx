@@ -64,7 +64,12 @@ const MobileNav = ({
             ) : (
               <>
                 <li>
-                  <UserProfile user={user} />
+                  <UserProfile
+                    image={user.image ?? ""}
+                    name={user.name ?? ""}
+                    email={user.email ?? ""}
+                    username={user.username ?? ""}
+                  />
                 </li>
                 <li>
                   <Link href={"/blog"}>Blog</Link>
