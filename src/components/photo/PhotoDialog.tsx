@@ -4,8 +4,10 @@ import { trpc } from "@/app/_trpc/client";
 import Image from "next/image";
 import Link from "next/link";
 import {
+  ArrowDown,
   Calendar,
   Camera,
+  ChevronDown,
   Download,
   Ellipsis,
   Forward,
@@ -31,13 +33,19 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import ReportDialog from "./ReportDialog";
+import { getUserSubscriptionPlan } from "@/lib/stripe";
 
 interface PhotoDialogProps {
   photoId: string;
   isOwn: string;
+  subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>;
 }
 
-const PhotoDialog = ({ photoId, isOwn }: PhotoDialogProps) => {
+const PhotoDialog = ({
+  photoId,
+  isOwn,
+  subscriptionPlan,
+}: PhotoDialogProps) => {
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const { data: photo } = trpc.getPhotoByPhotoId.useQuery({ id: photoId });
   const { data: tags } = trpc.photoRouter.getAllTagsOfPhoto.useQuery({
@@ -67,15 +75,22 @@ const PhotoDialog = ({ photoId, isOwn }: PhotoDialogProps) => {
         <div className="flex items-center gap-4">
           <ToolBar photoId={photoId} isOwn={isOwn} />
 
-          <Link
-            href={"/pricing"}
-            className={buttonVariants({
-              size: "sm",
-            })}
-          >
-            <Lock className="h-4 w-4 mr-1" />
-            Download
-          </Link>
+          {subscriptionPlan.isSubscribed ? (
+            <Button
+              onClick={() => download(photo?.url ?? "", "punsplash")}
+              variant={"outline"}
+              size={"sm"}
+              className="flex items-center shadow-md"
+            >
+              Download
+              <ChevronDown className="h-4 w-4 ml-1" />
+            </Button>
+          ) : (
+            <Link href={"/pricing"} className={buttonVariants({ size: "sm" })}>
+              <Lock className="w-4 h-4 mr-1.5" />
+              Download
+            </Link>
+          )}
         </div>
       </div>
 
@@ -130,46 +145,48 @@ const PhotoDialog = ({ photoId, isOwn }: PhotoDialogProps) => {
 
           <span>
             Published{" "}
-            {formatDistance(Date.now(), new Date(photo?.createdAt ?? ""))}
-            ago
+            {formatDistance(Date.now(), new Date(photo?.createdAt ?? ""))} ago
           </span>
         </div>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <div className="flex items-center gap-2">
-                <Camera className="w-4 h-4" />
-                <span>
-                  {photo?.exif_camera_make}, {photo?.exif_camera_model}
-                </span>
-              </div>
-            </TooltipTrigger>
-            <TooltipContent align="start">
-              <div className="flex flex-col gap-2 py-2">
-                <div className="flex flex-col">
-                  <span className="font-semibold">Camera</span>
+        {(photo?.exif_camera_make || photo?.exif_camera_model) && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <div className="flex items-center gap-2">
+                  <Camera className="w-4 h-4" />
                   <span>
                     {photo?.exif_camera_make}, {photo?.exif_camera_model}
                   </span>
                 </div>
-                <div className="flex flex-col">
-                  <span className="font-semibold">Lens</span>
-                  <span>
-                    {photo?.exif_focal_length}mm, f/{photo?.exif_aperture_value}
-                  </span>
-                  <span>{photo?.exif_exposure_time}s</span>
-                  <span>ISO {photo?.exif_iso}</span>
+              </TooltipTrigger>
+              <TooltipContent align="start">
+                <div className="flex flex-col gap-2 py-2">
+                  <div className="flex flex-col">
+                    <span className="font-semibold">Camera</span>
+                    <span>
+                      {photo?.exif_camera_make}, {photo?.exif_camera_model}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-semibold">Lens</span>
+                    <span>
+                      {photo?.exif_focal_length}mm, f/
+                      {photo?.exif_aperture_value}
+                    </span>
+                    <span>{photo?.exif_exposure_time}s</span>
+                    <span>ISO {photo?.exif_iso}</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-semibold">Dimensions</span>
+                    <span>
+                      {photo?.width} x {photo?.height}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex flex-col">
-                  <span className="font-semibold">Dimensions</span>
-                  <span>
-                    {photo?.width} x {photo?.height}
-                  </span>
-                </div>
-              </div>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
         <div className="flex items-center gap-2">
           <ShieldCheck className="w-4 h-4" />
           <span>Free to use under the Unsplash License</span>

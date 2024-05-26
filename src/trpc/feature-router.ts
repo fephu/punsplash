@@ -27,5 +27,13 @@ export const featureRouter = router({
 
     return features;
   }),
+  get5TopicTrending: publicProcedure.query(async () => {
+    const features = await db.feature.findMany({
+      where: {},
+      take: 5,
+    });
+
+    return features;
+  }),
 });
 export type FeatureRouter = typeof featureRouter;

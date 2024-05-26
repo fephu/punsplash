@@ -25,7 +25,7 @@ interface UserProfileProps {
   subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>;
 }
 
-const UserProfile = async ({
+const UserProfile = ({
   image,
   name,
   email,

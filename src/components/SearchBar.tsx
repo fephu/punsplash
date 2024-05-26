@@ -1,11 +1,24 @@
 "use client";
 
-import { Eraser, Loader2, ScanSearch, Search, X } from "lucide-react";
+import {
+  Eraser,
+  Loader2,
+  ScanSearch,
+  Search,
+  TrendingUp,
+  X,
+  XIcon,
+} from "lucide-react";
 import { useCallback, useRef, useState, useTransition } from "react";
 import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
 import { useRouter } from "next/navigation";
 import VisualSearch from "./search/VisualSearch";
+import Link from "next/link";
+import { useOnClickOutside } from "@/hooks/use-on-click-outside";
+import { trpc } from "@/app/_trpc/client";
+import { Feature } from "@prisma/client";
+import Image from "next/image";
 
 const SearchBar = () => {
   const router = useRouter();
@@ -14,8 +27,12 @@ const SearchBar = () => {
   const [isSearching, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
+  const { data: FiveTopicTrending } =
+    trpc.featureRouter.get5TopicTrending.useQuery();
+
   const search = () => {
     startTransition(() => {
+      setIsOpen(false);
       window.localStorage.setItem("recentSearches", JSON.stringify([query]));
       router.push(`/s/photos/${query.replace(/\s/g, "-")}`);
     });
@@ -67,16 +84,61 @@ const SearchBar = () => {
                 <div className="flex items-center">
                   <span>Recent Searches</span>
                   <Button variant={"ghost"} size={"sm"}>
-                    Clear
-                    <Eraser className="w-4 h-4 ml-1" />
+                    <Eraser className="w-4 h-4" />
                   </Button>
                 </div>
               </div>
-              <div className="flex flex-col">
+              <div className="flex flex-col gap-2">
                 <span>Trending Searches</span>
+                <div className="flex items-center gap-4 flex-wrap">
+                  <Link
+                    href={"/s/photos/Sea"}
+                    className={buttonVariants({
+                      variant: "outline",
+                      size: "sm",
+                    })}
+                  >
+                    <TrendingUp className="w-4 h-4 mr-2" />
+                    Sea
+                  </Link>
+                  <Link
+                    href={"/s/photos/Surf"}
+                    className={buttonVariants({
+                      variant: "outline",
+                      size: "sm",
+                    })}
+                  >
+                    <TrendingUp className="w-4 h-4 mr-2" />
+                    Surf
+                  </Link>
+                  <Link
+                    href={"/s/photos/Ocean"}
+                    className={buttonVariants({
+                      variant: "outline",
+                      size: "sm",
+                    })}
+                  >
+                    <TrendingUp className="w-4 h-4 mr-2" />
+                    Ocean
+                  </Link>
+                </div>
               </div>
-              <div className="flex flex-col">
+              <div className="flex flex-col gap-2">
                 <span>Trending Topics</span>
+                <div className="flex items-center gap-6 flex-wrap">
+                  {FiveTopicTrending &&
+                    FiveTopicTrending.map((topic: Feature) => (
+                      <Link
+                        href={`/t/${topic.value}`}
+                        className={buttonVariants({
+                          variant: "outline",
+                          size: "sm",
+                        })}
+                      >
+                        {topic.name}
+                      </Link>
+                    ))}
+                </div>
               </div>
               <div className="flex flex-col">
                 <span>Trending Collections</span>
