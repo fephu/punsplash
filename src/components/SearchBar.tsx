@@ -129,6 +129,7 @@ const SearchBar = () => {
                   {FiveTopicTrending &&
                     FiveTopicTrending.map((topic: Feature) => (
                       <Link
+                        key={topic.id}
                         href={`/t/${topic.value}`}
                         className={buttonVariants({
                           variant: "outline",
