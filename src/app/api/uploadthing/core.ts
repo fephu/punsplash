@@ -37,7 +37,16 @@ export const ourFileRouter = {
 
       return { userId: user.id };
     })
-    .onUploadComplete(async ({ metadata, file }) => {}),
+    .onUploadComplete(async ({ metadata, file }) => {
+      await db.user.update({
+        where: {
+          id: metadata.userId,
+        },
+        data: {
+          image: file.url,
+        },
+      });
+    }),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;

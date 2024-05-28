@@ -46,9 +46,9 @@ const Page = async () => {
       ],
     },
     {
-      plan: "Premium",
+      plan: "Punsplash",
       tagline: "For larger projects with higher needs.",
-      quota: PLANS.find((p) => p.slug === "premium")!.quota,
+      quota: PLANS.find((p) => p.slug === "punsplash")!.quota,
       features: [
         {
           text: "16MB file size limit",
@@ -93,11 +93,11 @@ const Page = async () => {
                   key={plan}
                   className={cn("relative rounded-2xl bg-white shadow-lg", {
                     "border-2 border-blue-600 shadow-blue-200":
-                      plan === "Premium",
-                    "border border-gray-200": plan !== "Premium",
+                      plan === "Punsplash",
+                    "border border-gray-200": plan !== "Punsplash",
                   })}
                 >
-                  {plan === "Premium" && (
+                  {plan === "Punsplash" && (
                     <div className="absolute -top-5 left-0 right-0 mx-auto w-32 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 px-3 py-2 text-sm font-medium text-white">
                       Upgrade now
                     </div>

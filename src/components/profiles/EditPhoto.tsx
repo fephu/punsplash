@@ -57,7 +57,6 @@ const EditPhoto = ({ photoId }: EditPhotoProps) => {
     tags.push(tag.keyword);
   });
 
-  const router = useRouter();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selected, setSelected] = useState<string>("details");
 
@@ -96,6 +95,7 @@ const EditPhoto = ({ photoId }: EditPhotoProps) => {
   const commandRef = useRef<HTMLDivElement>(null);
 
   useOnClickOutside(commandRef, () => {
+    setOpen(false);
     setSelected("");
   });
 

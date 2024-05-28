@@ -35,7 +35,8 @@ export default async function Home() {
       PhotoCollection: true,
       PhotoFeature: true,
     },
-    take: INFINITE_SCROLL_PAGINATION_RESULTS, // 4 to demonstrate infinite scroll, should be higher in production
+    take: INFINITE_SCROLL_PAGINATION_RESULTS,
+    // 4 to demonstrate infinite scroll, should be higher in production
   });
 
   return (

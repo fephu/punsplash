@@ -34,8 +34,6 @@ const ImagesSection = ({ user, isOwn }: ImagesSectionProps) => {
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const router = useRouter();
 
-  const utils = trpc.useContext();
-
   const { data: photos, isLoading } = trpc.profileRouter.getUserPhotos.useQuery(
     { userId: user?.id ?? "" }
   );

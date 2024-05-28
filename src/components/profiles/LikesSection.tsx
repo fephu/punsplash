@@ -29,24 +29,6 @@ interface LikesSectionProps {
 
 const LikesSection = ({ user, isOwn }: LikesSectionProps) => {
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
-  const router = useRouter();
-
-  const [currentlyDeletingPhoto, setCurrentlyDeletingPhoto] = useState<
-    string | null
-  >(null);
-
-  const utils = trpc.useContext();
-  const { mutate: deletePhoto } = trpc.profileRouter.deleteAPhoto.useMutation({
-    onSuccess: () => {
-      utils.profileRouter.getUserPhotos.invalidate();
-    },
-    onMutate({ photoId }) {
-      setCurrentlyDeletingPhoto(photoId);
-    },
-    onSettled() {
-      setCurrentlyDeletingPhoto(null);
-    },
-  });
 
   const { data: photos, isLoading } =
     trpc.profileRouter.getUserLikesPhotos.useQuery({

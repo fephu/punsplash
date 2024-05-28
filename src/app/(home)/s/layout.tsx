@@ -1,23 +1,6 @@
 import { Icons } from "@/components/Icons";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import SideBarSearch from "@/components/search/SidebarSearch";
-import { Button, buttonVariants } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  ArrowUpDown,
-  Folder,
-  ImageIcon,
-  ShieldCheck,
-  User,
-} from "lucide-react";
 import Link from "next/link";
 
 export default function SearchLayout({

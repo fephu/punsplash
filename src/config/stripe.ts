@@ -12,8 +12,8 @@ export const PLANS = [
     },
   },
   {
-    name: "Premium",
-    slug: "premium",
+    name: "Punsplash",
+    slug: "punsplash",
     quota: 50,
     price: {
       amount: 14,

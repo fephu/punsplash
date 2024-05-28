@@ -1,6 +1,5 @@
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import AccountSettings from "@/components/account/AccountSettings";
-import { db } from "@/db";
 import { getAuthSession } from "@/lib/auth";
 import { notFound } from "next/navigation";
 

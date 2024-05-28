@@ -1,18 +1,15 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 import { GeistSans } from "geist/font/sans";
 import { cn } from "@/lib/utils";
-import Navbar from "@/components/Navbar";
 import Providers from "@/components/Providers";
 
 import "react-loading-skeleton/dist/skeleton.css";
 import { Toaster } from "sonner";
 
-const inter = Inter({ subsets: ["latin"] });
-
 export const metadata: Metadata = {
-  title: "Punsplash",
+  title: "Punsplash | Blog",
   description: "Welcome to Punsplash",
 };
 
@@ -35,9 +32,6 @@ export default function RootLayout({
     >
       <Providers>
         <body className="min-h-screen bg-slate-50 antialiased">
-          <Navbar />
-          {authModal}
-          {photoModal}
           {children}
 
           <Toaster richColors position="top-center" />

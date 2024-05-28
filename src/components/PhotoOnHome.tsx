@@ -17,7 +17,6 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { INFINITE_SCROLL_PAGINATION_RESULTS } from "@/config/infinite";
 import axios from "axios";
 import { useIntersection } from "@mantine/hooks";
-import { useSession } from "next-auth/react";
 
 interface PhotoOnHomeProps {
   subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>;
