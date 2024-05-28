@@ -15,13 +15,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-  authModal,
-  photoModal,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-  authModal: React.ReactNode;
-  photoModal: React.ReactNode;
-}>) {
+}) {
   return (
     <html
       lang="en"
