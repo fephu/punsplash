@@ -47,7 +47,7 @@ const FollowingRequest = ({
       );
       pusherClient.unbind("incoming_friend_requests", followRequestHandler);
     };
-  }, []);
+  }, [sessionId]);
 
   const accecptFollow = async (senderId: string) => {
     await axios.post("/api/follow/accept", { id: senderId });
