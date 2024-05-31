@@ -26,7 +26,7 @@ const HomeBlog = () => {
       <Intro />
       <Description />
       <Section />
-      <div className="h-screen p-20">
+      <div className="h-screen p-2 py-10 md:p-20">
         <BlogCard />
       </div>
     </main>

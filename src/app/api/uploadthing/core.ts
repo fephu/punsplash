@@ -1,7 +1,8 @@
 import { db } from "@/db";
 import { getAuthSession } from "@/lib/auth";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
-import { UploadThingError } from "uploadthing/server";
+import { load as cocoSSDLoad } from "@tensorflow-models/coco-ssd";
+import * as tf from "@tensorflow/tfjs";
 
 const f = createUploadthing();
 
@@ -18,6 +19,26 @@ export const ourFileRouter = {
       return { userId: user.id };
     })
     .onUploadComplete(async ({ metadata, file }) => {
+      const net = await cocoSSDLoad();
+
+      const response = await fetch(file.url);
+      const blob = await response.blob();
+      const imageElement = await createImageBitmap(blob);
+
+      const tensor = tf.browser.fromPixels(imageElement);
+
+      const predictions = await net.detect(tensor);
+
+      predictions.forEach((prediction) => {
+        console.log(
+          `Đối tượng: ${
+            prediction.class
+          }, Độ tin cậy: ${prediction.score.toFixed(2)}, Vị trí: ${
+            prediction.bbox
+          }`
+        );
+      });
+
       const createdPhoto = await db.photo.create({
         data: {
           userId: metadata.userId,

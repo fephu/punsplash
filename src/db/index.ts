@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { Redis } from "@upstash/redis";
 
 declare global {
   // eslint-disable-next-line no-var
@@ -16,3 +17,8 @@ if (process.env.NODE_ENV === "production") {
 }
 
 export const db = prisma;
+
+export const dbRedis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+});

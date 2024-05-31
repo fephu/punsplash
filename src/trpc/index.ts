@@ -379,5 +379,67 @@ export const appRouter = router({
 
     return { url: stripeSession.url };
   }),
+  getRecentSearches: publicProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ input }) => {
+      const { userId } = input;
+
+      const recentSearches = await db.recentSearches.findMany({
+        where: {
+          userId,
+        },
+        orderBy: {
+          createdAt: "asc",
+        },
+      });
+
+      return recentSearches;
+    }),
+  saveRecentSearches: privateProcedure
+    .input(z.object({ key: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { userId } = ctx;
+      const { key } = input;
+
+      const recentSearches = await db.recentSearches.findMany({
+        where: {
+          userId,
+        },
+        orderBy: {
+          createdAt: "asc",
+        },
+      });
+
+      if (recentSearches.length === 5) {
+        await db.recentSearches.delete({
+          where: {
+            userId_keyword: {
+              userId,
+              keyword: recentSearches[0].keyword,
+            },
+          },
+        });
+      }
+
+      await db.recentSearches.create({
+        data: {
+          userId,
+          keyword: key,
+        },
+      });
+
+      return { success: true };
+    }),
+  clearRecentSearches: privateProcedure.mutation(async ({ ctx }) => {
+    const { userId } = ctx;
+
+    await db.recentSearches.deleteMany({
+      where: {
+        userId,
+      },
+    });
+
+    return { success: true };
+  }),
 });
 export type AppRouter = typeof appRouter;

@@ -15,12 +15,15 @@ import { Button, buttonVariants } from "./ui/button";
 import { useRouter } from "next/navigation";
 import VisualSearch from "./search/VisualSearch";
 import Link from "next/link";
-import { useOnClickOutside } from "@/hooks/use-on-click-outside";
 import { trpc } from "@/app/_trpc/client";
 import { Feature } from "@prisma/client";
 import Image from "next/image";
 
-const SearchBar = () => {
+interface SearchBarProps {
+  userId: string;
+}
+
+const SearchBar = ({ userId }: SearchBarProps) => {
   const router = useRouter();
   const [query, setQuery] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -30,13 +33,27 @@ const SearchBar = () => {
   const { data: FiveTopicTrending } =
     trpc.featureRouter.get5TopicTrending.useQuery();
 
+  const { mutate: saveRecentSearches } = trpc.saveRecentSearches.useMutation();
+
+  const utils = trpc.useContext();
+
+  const { mutate: clearRecentSearches } = trpc.clearRecentSearches.useMutation({
+    onSuccess: () => {
+      utils.getRecentSearches.invalidate();
+    },
+  });
+
   const search = () => {
     startTransition(() => {
       setIsOpen(false);
-      window.localStorage.setItem("recentSearches", JSON.stringify([query]));
+      if (userId) {
+        saveRecentSearches({ key: query });
+      }
       router.push(`/s/photos/${query.replace(/\s/g, "-")}`);
     });
   };
+
+  const { data: recentSearches } = trpc.getRecentSearches.useQuery({ userId });
 
   return (
     <div className="relative w-full h-11 max-w-3xl flex flex-col bg-white rounded-md mx-4 md:mx-0">
@@ -79,15 +96,35 @@ const SearchBar = () => {
 
         {isOpen && (
           <div className="absolute bg-white top-[110%] w-full rounded-md">
-            <div className="flex flex-col px-6 pt-2 pb-4 gap-4">
-              <div className="flex flex-col">
-                <div className="flex items-center">
-                  <span>Recent Searches</span>
-                  <Button variant={"ghost"} size={"sm"}>
-                    <Eraser className="w-4 h-4" />
-                  </Button>
+            <div className="flex flex-col px-6 p-4 gap-4">
+              {recentSearches && recentSearches.length > 0 && (
+                <div className="flex flex-col">
+                  <div className="flex items-center">
+                    <span>Recent Searches</span>
+                    <Button
+                      variant={"ghost"}
+                      size={"sm"}
+                      className="ml-2"
+                      onClick={() => clearRecentSearches()}
+                    >
+                      Clear
+                    </Button>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    {recentSearches.map((recent: any) => (
+                      <Link
+                        href={"/s/photos/Sea"}
+                        className={buttonVariants({
+                          variant: "outline",
+                          size: "sm",
+                        })}
+                      >
+                        {recent.keyword}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
               <div className="flex flex-col gap-2">
                 <span>Trending Searches</span>
                 <div className="flex items-center gap-4 flex-wrap">

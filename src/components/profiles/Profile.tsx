@@ -13,6 +13,7 @@ import {
   Heart,
   ImageIcon,
   Locate,
+  Mail,
   MapPin,
   Pencil,
   X,
@@ -23,15 +24,31 @@ import { Button, buttonVariants } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { User } from "@prisma/client";
 import ConnectWith from "./ConnectWith";
+import axios, { AxiosError } from "axios";
+import { z } from "zod";
 
 interface ProfileProps {
   children: React.ReactNode;
   user: User | null;
   userId: string;
+  isFollowed: number;
 }
 
-const Profile = ({ children, user, userId }: ProfileProps) => {
-  const router = useRouter();
+const Profile = ({ children, user, userId, isFollowed }: ProfileProps) => {
+  const follow = async (email: string) => {
+    try {
+      await axios.post("/api/follow/add", {
+        email,
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return;
+      }
+      if (error instanceof AxiosError) {
+        return;
+      }
+    }
+  };
 
   const { data: countOfPhoto } = trpc.countPhoto.useQuery({
     userId: user?.id ?? "",
@@ -68,10 +85,7 @@ const Profile = ({ children, user, userId }: ProfileProps) => {
         <div className="flex flex-col items-start gap-2 px-0 md:px-2">
           <div className="flex items-center gap-2">
             <span className="text-4xl font-semibold mr-4">{user?.name}</span>
-            {user?.isHired && user.id !== userId && (
-              <Button size={"sm"}>Hire</Button>
-            )}
-            {user?.id === userId && (
+            {user?.id === userId ? (
               <Link
                 href={"/account"}
                 className={buttonVariants({ variant: "outline", size: "sm" })}
@@ -79,45 +93,68 @@ const Profile = ({ children, user, userId }: ProfileProps) => {
                 <Pencil className="w-3.5 h-3.5 mr-2" />
                 Edit Profile
               </Link>
+            ) : (
+              <div className="flex items-center gap-2">
+                {isFollowed === 0 && userId ? (
+                  <Button size={"sm"} onClick={() => follow(user?.email ?? "")}>
+                    Follow
+                  </Button>
+                ) : !userId ? (
+                  <Link
+                    href={"/sign-in"}
+                    className={buttonVariants({ size: "sm" })}
+                  >
+                    Follow
+                  </Link>
+                ) : (
+                  <Button variant={"outline"} size={"sm"}>
+                    Following
+                  </Button>
+                )}
+                <Button variant={"outline"} size={"sm"}>
+                  <Mail className="w-4 h-4" />
+                </Button>
+              </div>
+            )}
+            {user?.isHired && user.id !== userId && (
+              <Button size={"sm"} variant={"outline"}>
+                Hire
+              </Button>
             )}
           </div>
           {user?.bio && <span className="my-2">{user?.bio}</span>}
 
-          {user?.isHired ? (
+          {user?.isHired && userId === user.id ? (
             <div className="flex items-center text-green-700">
               <CircleCheck className="w-4 h-4 mr-1.5" />
               Available for hire{" "}
-              {userId && (
-                <Link
-                  href={"/account/hiring"}
-                  className={buttonVariants({
-                    variant: "link",
-                    size: "sm",
-                    className: "underline",
-                  })}
-                >
-                  Update
-                </Link>
-              )}
+              <Link
+                href={"/account/hiring"}
+                className={buttonVariants({
+                  variant: "link",
+                  size: "sm",
+                  className: "underline",
+                })}
+              >
+                Update
+              </Link>
             </div>
-          ) : (
+          ) : !user?.isHired && userId === user?.id ? (
             <div className="flex items-center">
               <CircleX className="w-4 h-4 mr-1.5" />
               Not available for hire{" "}
-              {userId && (
-                <Link
-                  href={"/account/hiring"}
-                  className={buttonVariants({
-                    variant: "link",
-                    size: "sm",
-                    className: "underline",
-                  })}
-                >
-                  Update
-                </Link>
-              )}
+              <Link
+                href={"/account/hiring"}
+                className={buttonVariants({
+                  variant: "link",
+                  size: "sm",
+                  className: "underline",
+                })}
+              >
+                Update
+              </Link>
             </div>
-          )}
+          ) : null}
 
           {user?.location && (
             <Link href={"/"} className="flex items-center gap-2 mt-6">

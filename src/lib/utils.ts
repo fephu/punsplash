@@ -12,3 +12,7 @@ export function absoluteUrl(path: string) {
 
   return `http://localhost:${process.env.PORT ?? 3000}${path}`;
 }
+
+export function toPusherKey(key: string) {
+  return key.replace(/:/g, "__");
+}

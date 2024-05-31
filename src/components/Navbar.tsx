@@ -8,6 +8,10 @@ import { db } from "@/db";
 import UploadDialog from "./UploadDialog";
 import MobileNav from "./MobileNav";
 import { getUserSubscriptionPlan } from "@/lib/stripe";
+import { Bell } from "lucide-react";
+import BellNotification from "./BellNotification";
+import { fetchRedis } from "@/helpers/redis";
+import { User } from "next-auth";
 
 const Navbar = async () => {
   const session = await getAuthSession();
@@ -18,6 +22,18 @@ const Navbar = async () => {
   });
 
   const subscriptionPlan = await getUserSubscriptionPlan();
+
+  const idToAdd = (await fetchRedis(
+    "get",
+    `user:email:${session?.user.email}`
+  )) as string;
+
+  const unseenNotificationCount = (
+    (await fetchRedis(
+      "smembers",
+      `user:${idToAdd}:incoming_friend_requests`
+    )) as User[]
+  ).length;
 
   return (
     <div className="fixed top-0 inset-x-0 h-fit bg-zinc-100 border-b border-zinc-300 z-[50] py-2">
@@ -32,7 +48,7 @@ const Navbar = async () => {
 
         {/* Search bar */}
 
-        <SearchBar />
+        <SearchBar userId={user?.id ?? ""} />
 
         <MobileNav
           subscriptionPlan={subscriptionPlan}
@@ -53,6 +69,9 @@ const Navbar = async () => {
           {session?.user ? (
             <>
               <UploadDialog username={session.user.username ?? ""} />
+              <BellNotification
+                unseenNotificationCount={unseenNotificationCount}
+              />
               <UserProfile
                 name={user?.name ?? ""}
                 email={user?.email ?? ""}

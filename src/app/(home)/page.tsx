@@ -55,7 +55,7 @@ export default async function Home() {
               Powered by creators everywhere.
             </span>
             <div className="hidden md:block">
-              <SearchBar />
+              <SearchBar userId={userId ?? ""} />
             </div>
           </div>
 

@@ -58,12 +58,22 @@ model User {
   stripePriceId          String?   @map(name: "stripe_price_id")
   stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
 
-  image      String?
-  accounts   Account[]
-  sessions   Session[]
-  Photo      Photo[]
-  Collection Collection[]
-  LikedPhoto LikedPhoto[]
+  image          String?
+  accounts       Account[]
+  sessions       Session[]
+  Photo          Photo[]
+  Collection     Collection[]
+  LikedPhoto     LikedPhoto[]
+  RecentSearches RecentSearches[]
+}
+
+model RecentSearches {
+  keyword   String
+  userId    String
+  createdAt DateTime @default(now())
+  User      User     @relation(fields: [userId], references: [id])
+
+  @@id([userId, keyword])
 }
 
 model Photo {
