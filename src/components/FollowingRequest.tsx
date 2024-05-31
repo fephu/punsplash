@@ -64,7 +64,7 @@ const FollowingRequest = ({
       {followRequest.length === 0 ? (
         <p>Nothing to show here...</p>
       ) : (
-        followRequest.map((request) => (
+        followRequest.map((request: any) => (
           <div
             key={request.senderId}
             className="flex items-center justify-between"

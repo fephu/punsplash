@@ -113,6 +113,7 @@ const SearchBar = ({ userId }: SearchBarProps) => {
                   <div className="flex items-center gap-4">
                     {recentSearches.map((recent: any) => (
                       <Link
+                        key={recent.userId}
                         href={"/s/photos/Sea"}
                         className={buttonVariants({
                           variant: "outline",
