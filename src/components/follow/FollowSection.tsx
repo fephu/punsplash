@@ -1,36 +1,35 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import EditPhoto from "./profiles/EditPhoto";
-import ToolBar from "./ToolBar";
-import AvatarHover from "./AvatarHover";
-import { Button, buttonVariants } from "./ui/button";
-import { ArrowDown, Download, Ghost, Loader2, Lock } from "lucide-react";
-import Skeleton from "react-loading-skeleton";
 import { trpc } from "@/app/_trpc/client";
-import { saveAs } from "file-saver";
-import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import PhotoOnHome from "../PhotoOnHome";
 import { getUserSubscriptionPlan } from "@/lib/stripe";
-import { Photo } from "@prisma/client";
+import Link from "next/link";
+import Image from "next/image";
+import ToolBar from "../ToolBar";
+import AvatarHover from "../AvatarHover";
+import { Button, buttonVariants } from "../ui/button";
+import { ArrowDown, Ghost, Loader2, Lock } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { useIntersection } from "@mantine/hooks";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { INFINITE_SCROLL_PAGINATION_RESULTS } from "@/config/infinite";
+import { saveAs } from "file-saver";
 import axios from "axios";
-import { useIntersection } from "@mantine/hooks";
+import { Photo } from "@prisma/client";
 
-interface PhotoOnHomeProps {
+interface FollowSectionProps {
+  userId: string;
   subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>;
-  isOwn: string;
   initialPhotos: Photo[];
 }
 
-const PhotoOnHome = ({
-  isOwn,
+const FollowSection = ({
+  userId,
   subscriptionPlan,
   initialPhotos,
-}: PhotoOnHomeProps) => {
-  const [isDownloading, setIsDownloading] = useState<boolean>(false);
-  const { mutate: incrDownload } = trpc.incrDownload.useMutation({});
+}: FollowSectionProps) => {
+  const router = useRouter();
   const lastPostRef = useRef<HTMLElement>(null);
   const { ref, entry } = useIntersection({
     root: lastPostRef.current,
@@ -60,12 +59,14 @@ const PhotoOnHome = ({
     }
   }, [entry, fetchNextPage]);
 
-  const download = async (url: string, name: string, photoId: string) => {
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
+
+  const download = async (url: string, name: string) => {
     try {
       setIsDownloading(true);
-      incrDownload({ photoId });
       const response = await fetch(url);
       const blob = await response.blob();
+
       saveAs(blob, `${name}`);
     } catch (err) {
     } finally {
@@ -77,6 +78,14 @@ const PhotoOnHome = ({
 
   return (
     <>
+      <div className="mt-16 flex flex-col items-start justify-between sm:flex-row sm:items-center gap-4 sm:gap-0 pb-16">
+        <div className="flex flex-col">
+          <h1 className="mb-3 font-bold text-5xl text-gray-900">Following</h1>
+          <span className="text-base text-foreground">
+            The latest images from photographers you follow.
+          </span>
+        </div>
+      </div>
       {photos && photos.length !== 0 ? (
         <>
           <ul className="columns-1 md:columns-2 xl:columns-3 gap-6 mt-20 pb-40">
@@ -102,7 +111,7 @@ const PhotoOnHome = ({
                     </Link>
 
                     <div className="absolute opacity-0 card__data group-hover:opacity-1 top-4 right-4 flex items-center gap-4">
-                      <ToolBar photoId={photo.id} isOwn={isOwn} />
+                      <ToolBar photoId={photo.id} isOwn={userId} />
                     </div>
 
                     <div className="flex items-center px-4 justify-between absolute bottom-4 w-full opacity-0 card__data">
@@ -113,9 +122,7 @@ const PhotoOnHome = ({
 
                       {subscriptionPlan.isSubscribed ? (
                         <Button
-                          onClick={() =>
-                            download(photo.url, "punsplash", photo.id)
-                          }
+                          onClick={() => download(photo.url, "punsplash")}
                           variant={"outline"}
                           size={"sm"}
                           className="flex items-center gap-1"
@@ -154,7 +161,7 @@ const PhotoOnHome = ({
                     </Link>
 
                     <div className="absolute opacity-0 card__data group-hover:opacity-1 top-4 right-4 flex items-center gap-4">
-                      <ToolBar photoId={photo.id} isOwn={isOwn} />
+                      <ToolBar photoId={photo.id} isOwn={userId} />
                     </div>
 
                     <div className="flex items-center px-4 justify-between absolute bottom-4 w-full opacity-0 card__data">
@@ -165,9 +172,7 @@ const PhotoOnHome = ({
 
                       {subscriptionPlan.isSubscribed ? (
                         <Button
-                          onClick={() =>
-                            download(photo.url, "punsplash", photo.id)
-                          }
+                          onClick={() => download(photo.url, "punsplash")}
                           variant={"outline"}
                           size={"sm"}
                           className="flex items-center gap-1"
@@ -206,4 +211,4 @@ const PhotoOnHome = ({
   );
 };
 
-export default PhotoOnHome;
+export default FollowSection;

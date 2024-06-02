@@ -50,7 +50,7 @@ const BellNotification = async ({
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-[25rem]">
+      <PopoverContent align="end" className="w-[25rem] h-[25rem]">
         <FollowingRequest
           incomingFollowRequest={incomingFollowRequest}
           sessionId={idToAdd}

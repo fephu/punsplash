@@ -115,8 +115,7 @@ const Page = async ({ params }: PageProps) => {
 
           <span>
             Published{" "}
-            {formatDistance(Date.now(), new Date(photo?.createdAt ?? ""))}
-            ago
+            {formatDistance(Date.now(), new Date(photo?.createdAt ?? ""))} ago
           </span>
         </div>
         <TooltipProvider>

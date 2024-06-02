@@ -62,7 +62,7 @@ const EditPhoto = ({ photoId }: EditPhotoProps) => {
 
   const utils = trpc.useContext();
 
-  const { data: photo } = trpc.getPhotoByPhotoId.useQuery({ id: photoId });
+  const { data: photo } = trpc.getPhotoByPhotoId.useQuery({ photoId });
 
   const { mutate: deleteImage } = trpc.photoRouter.deleteImage.useMutation({
     onSuccess: () => {

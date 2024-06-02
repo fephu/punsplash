@@ -1,7 +1,9 @@
 import CloseButton from "@/components/photo/CloseButton";
 import PhotoDialog from "@/components/photo/PhotoDialog";
+import { db } from "@/db";
 import { getAuthSession } from "@/lib/auth";
 import { getUserSubscriptionPlan } from "@/lib/stripe";
+import { notFound } from "next/navigation";
 
 interface PageProps {
   params: {
@@ -15,6 +17,21 @@ const Page = async ({ params }: PageProps) => {
 
   const photoId = params.photoId;
 
+  const photo = await db.photo.findFirst({
+    where: { id: photoId },
+  });
+
+  if (!photo) notFound();
+
+  await db.photo.update({
+    where: { id: photoId },
+    data: {
+      statViews: {
+        increment: 1,
+      },
+    },
+  });
+
   const subscriptionPlan = await getUserSubscriptionPlan();
 
   return (
@@ -27,6 +44,22 @@ const Page = async ({ params }: PageProps) => {
               photoId={photoId}
               isOwn={userId ?? ""}
               subscriptionPlan={subscriptionPlan}
+              photoUrl={photo.url}
+              photoUserId={photo.userId ?? ""}
+              photoStatsView={photo.statViews}
+              photoStatsDownload={photo.statDownload}
+              photoDescription={photo.description ?? ""}
+              photoCity={photo.photo_location_city ?? ""}
+              photoCountry={photo.photo_location_country ?? ""}
+              photoCreatedAt={photo.createdAt ?? ""}
+              photoCameraMake={photo.exif_camera_make ?? ""}
+              photoCameraModel={photo.exif_camera_model ?? ""}
+              photoAV={photo.exif_aperture_value ?? 0}
+              photoET={photo.exif_exposure_time ?? ""}
+              photoFL={photo.exif_focal_length ?? 0}
+              photoISO={photo.exif_iso ?? 0}
+              photoW={photo.width ?? 0}
+              photoH={photo.height ?? 0}
             />
           </div>
         </div>

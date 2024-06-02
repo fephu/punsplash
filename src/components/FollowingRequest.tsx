@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, UserPlus, X } from "lucide-react";
+import { Check, Frown, UserPlus, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Avatar, AvatarImage } from "./ui/avatar";
@@ -62,7 +62,10 @@ const FollowingRequest = ({
   return (
     <>
       {followRequest.length === 0 ? (
-        <p>Nothing to show here...</p>
+        <div className="flex flex-col justify-center items-center w-full h-full">
+          <Frown className="w-8 h-8 mb-2" />
+          <p className="text-muted-foreground">Nothing to show here...</p>
+        </div>
       ) : (
         followRequest.map((request: any) => (
           <div

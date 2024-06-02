@@ -6,6 +6,7 @@ import { Lock } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 import { buttonVariants } from "../ui/button";
 import Image from "next/image";
+import { encodeImage } from "@/lib/encode";
 
 interface CollectionsItemProps {
   id: string;

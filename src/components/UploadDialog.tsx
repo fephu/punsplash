@@ -153,14 +153,7 @@ const UploadDialog = ({ username }: UploadDialogProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
-    <Dialog
-      open={isOpen}
-      onOpenChange={(v) => {
-        if (!v) {
-          setIsOpen(v);
-        }
-      }}
-    >
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild onClick={() => setIsOpen(true)}>
         <Button variant={"outline"} size={"sm"}>
           Submit a photo

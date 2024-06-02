@@ -25,7 +25,7 @@ import Skeleton from "react-loading-skeleton";
 import { saveAs } from "file-saver";
 import { useState } from "react";
 import { Icons } from "../Icons";
-import { format, formatDistance, subDays } from "date-fns";
+import { format, formatDate, formatDistance, subDays } from "date-fns";
 import {
   Tooltip,
   TooltipContent,
@@ -34,30 +34,66 @@ import {
 } from "../ui/tooltip";
 import ReportDialog from "./ReportDialog";
 import { getUserSubscriptionPlan } from "@/lib/stripe";
+import { notFound } from "next/navigation";
 
 interface PhotoDialogProps {
   photoId: string;
   isOwn: string;
+  photoUrl: string;
   subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>;
+  photoUserId: string;
+  photoStatsView: number;
+  photoStatsDownload: number;
+  photoDescription: string;
+  photoCity: string;
+  photoCountry: string;
+  photoCreatedAt: Date;
+  photoCameraMake: string;
+  photoCameraModel: string;
+  photoFL: number;
+  photoAV: number;
+  photoET: string;
+  photoISO: number;
+  photoW: number;
+  photoH: number;
 }
 
 const PhotoDialog = ({
   photoId,
   isOwn,
   subscriptionPlan,
+  photoUrl,
+  photoUserId,
+  photoStatsView,
+  photoStatsDownload,
+  photoDescription,
+  photoCity,
+  photoCountry,
+  photoCreatedAt,
+  photoCameraMake,
+  photoCameraModel,
+  photoFL,
+  photoAV,
+  photoET,
+  photoISO,
+  photoW,
+  photoH,
 }: PhotoDialogProps) => {
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
-  const { data: photo } = trpc.getPhotoByPhotoId.useQuery({ id: photoId });
+
   const { data: tags } = trpc.photoRouter.getAllTagsOfPhoto.useQuery({
     id: photoId,
   });
 
+  const { mutate: incrDownload } = trpc.incrDownload.useMutation({});
+
   const { data: photos, isLoading } =
     trpc.photoRouter.get20PhotoRelated.useQuery();
 
-  const download = async (url: string, name: string) => {
+  const download = async (url: string, name: string, photoId: string) => {
     try {
       setIsDownloading(true);
+      incrDownload({ photoId });
       const response = await fetch(url);
       const blob = await response.blob();
 
@@ -71,13 +107,13 @@ const PhotoDialog = ({
   return (
     <div className="flex relative flex-col items-center w-full h-full">
       <div className="flex sticky top-0 h-16 bg-white items-center justify-between w-full">
-        <AvatarHover className="text-black" userId={photo?.userId ?? ""} />
+        <AvatarHover className="text-black" userId={photoUserId ?? ""} />
         <div className="flex items-center gap-4">
           <ToolBar photoId={photoId} isOwn={isOwn} />
 
           {subscriptionPlan.isSubscribed ? (
             <Button
-              onClick={() => download(photo?.url ?? "", "punsplash")}
+              onClick={() => download(photoUrl ?? "", "punsplash", photoId)}
               variant={"outline"}
               size={"sm"}
               className="flex items-center shadow-md"
@@ -95,7 +131,7 @@ const PhotoDialog = ({
       </div>
 
       <Image
-        src={photo?.url ?? ""}
+        src={photoUrl ?? ""}
         width={500}
         height={500}
         alt="Photo"
@@ -107,11 +143,11 @@ const PhotoDialog = ({
         <div className="flex items-center gap-14">
           <div className="flex flex-col">
             <span className="font-semibold text-sm">Views</span>
-            <span className="text-sm">{photo?.statViews}</span>
+            <span className="text-sm">{photoStatsView}</span>
           </div>
           <div className="flex flex-col">
             <span className="font-semibold text-sm">Downloads</span>
-            <span className="text-sm">50,763</span>
+            <span className="text-sm">{photoStatsDownload}</span>
           </div>
         </div>
 
@@ -121,22 +157,20 @@ const PhotoDialog = ({
         </div>
       </div>
 
-      {photo?.description && (
+      {photoDescription && (
         <div className="mt-6 text-base font-semibold text-gray-600 w-full">
-          {photo.description}
+          {photoDescription}
         </div>
       )}
 
       <div className="w-full flex flex-col gap-1 text-muted-foreground mt-6">
-        {photo?.photo_location_country && (
+        {photoCountry && (
           <div className="flex items-center gap-2">
             <MapPin className="w-4 h-4" />
 
             <span>
-              {photo.photo_location_city && (
-                <span>{photo.photo_location_city}, </span>
-              )}
-              {photo?.photo_location_country}
+              {photoCity && <span>{photoCity}, </span>}
+              {photoCountry}
             </span>
           </div>
         )}
@@ -144,18 +178,17 @@ const PhotoDialog = ({
           <Calendar className="w-4 h-4" />
 
           <span>
-            Published{" "}
-            {formatDistance(Date.now(), new Date(photo?.createdAt ?? ""))} ago
+            Published {formatDistance(Date.now(), new Date(photoCreatedAt))} ago
           </span>
         </div>
-        {(photo?.exif_camera_make || photo?.exif_camera_model) && (
+        {(photoCameraMake || photoCameraModel) && (
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
                 <div className="flex items-center gap-2">
                   <Camera className="w-4 h-4" />
                   <span>
-                    {photo?.exif_camera_make}, {photo?.exif_camera_model}
+                    {photoCameraMake}, {photoCameraModel}
                   </span>
                 </div>
               </TooltipTrigger>
@@ -164,22 +197,22 @@ const PhotoDialog = ({
                   <div className="flex flex-col">
                     <span className="font-semibold">Camera</span>
                     <span>
-                      {photo?.exif_camera_make}, {photo?.exif_camera_model}
+                      {photoCameraMake}, {photoCameraModel}
                     </span>
                   </div>
                   <div className="flex flex-col">
                     <span className="font-semibold">Lens</span>
                     <span>
-                      {photo?.exif_focal_length}mm, f/
-                      {photo?.exif_aperture_value}
+                      {photoFL}mm, f/
+                      {photoAV}
                     </span>
-                    <span>{photo?.exif_exposure_time}s</span>
-                    <span>ISO {photo?.exif_iso}</span>
+                    <span>{photoET}s</span>
+                    <span>ISO {photoISO}</span>
                   </div>
                   <div className="flex flex-col">
                     <span className="font-semibold">Dimensions</span>
                     <span>
-                      {photo?.width} x {photo?.height}
+                      {photoW} x {photoH}
                     </span>
                   </div>
                 </div>
@@ -236,7 +269,7 @@ const PhotoDialog = ({
                   <AvatarHover userId={photo.userId ?? ""} />
 
                   <Button
-                    onClick={() => download(photo.url, "punsplash")}
+                    onClick={() => download(photo.url, "punsplash", photo.id)}
                     variant={"outline"}
                     size={"sm"}
                     className="flex items-center gap-1"

@@ -39,7 +39,7 @@ const Navbar = async () => {
     <div className="fixed top-0 inset-x-0 h-fit bg-zinc-100 border-b border-zinc-300 z-[50] py-2">
       <div className="container max-w-8xl h-full mx-auto flex items-center justify-between gap-2">
         {/* Logo */}
-        <Link href={"/"} className="flex gap-2 items-center">
+        <Link href={"/"} className="flex gap-2 items-center mr-0 md:mr-6">
           <Icons.logo className="w-8 h-8 sm:h-6 sm:w-6" />
           <p className="hidden text-zinc-700 text-lg font-semibold md:block">
             Punsplash
@@ -56,7 +56,7 @@ const Navbar = async () => {
           username={user?.username ?? ""}
         />
 
-        <div className="hidden sm:flex items-center gap-6">
+        <div className="hidden sm:flex items-center gap-6 ml-6">
           <Link href={"/blog"} className={buttonVariants({ variant: "ghost" })}>
             Blog
           </Link>

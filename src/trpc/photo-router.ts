@@ -188,5 +188,21 @@ export const photoRouter = router({
 
       return { success: true };
     }),
+  getFollowingPhotos: publicProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ input }) => {
+      const { userId } = input;
+
+      const photos = await db.photo.findMany({
+        where: {
+          userId,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      return photos;
+    }),
 });
 export type PhotoRouter = typeof photoRouter;

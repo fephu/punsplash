@@ -20,7 +20,9 @@ const SharePopover = () => {
   const url = usePathname();
 
   const copylink = () => {
-    navigator.clipboard.writeText(absoluteUrl(url));
+    navigator.clipboard.writeText(
+      absoluteUrl(`https://punsplash.vercel.app${url}`)
+    );
     toast.success("Copied.");
   };
 
@@ -35,9 +37,7 @@ const SharePopover = () => {
       <PopoverContent className="w-40 p-0" align="end">
         <FacebookShareButton
           hashtag="#ShareIntoPunplash"
-          url={
-            "https://unsplash.com/photos/a-tray-of-roasted-carrots-and-potatoes-KxUIupj29iU"
-          }
+          url={`https://punsplash.vercel.app${url}`}
           className="w-full"
         >
           <Button variant={"ghost"} className="w-full">
@@ -47,9 +47,7 @@ const SharePopover = () => {
         </FacebookShareButton>
 
         <TwitterShareButton
-          url={
-            "https://unsplash.com/photos/a-tray-of-roasted-carrots-and-potatoes-KxUIupj29iU"
-          }
+          url={`https://punsplash.vercel.app${url}`}
           className="w-full"
         >
           <Button variant={"ghost"} className="w-full">

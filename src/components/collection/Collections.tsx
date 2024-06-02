@@ -15,10 +15,10 @@ const Collections = ({ userId }: CollectionsProps) => {
 
   return (
     <>
-      <div className="mt-16 flex flex-col items-start justify-between sm:flex-row sm:items-center gap-4 sm:gap-0 border-b border-gray-200 pb-16">
+      <div className="mt-16 flex flex-col items-start justify-between sm:flex-row sm:items-center gap-4 sm:gap-0 pb-16">
         <div className="flex flex-col">
-          <h1 className="mb-3 font-bold text-4xl text-gray-900">Collections</h1>
-          <span className="text-sm text-foreground">
+          <h1 className="mb-3 font-bold text-5xl text-gray-900">Collections</h1>
+          <span className="text-lg text-foreground">
             Explore the world through collections of beautiful photos free to
             use under the
           </span>

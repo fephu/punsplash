@@ -114,13 +114,15 @@ export const appRouter = router({
       });
     }),
   getPhotoByPhotoId: publicProcedure
-    .input(z.object({ id: z.string() }))
+    .input(z.object({ photoId: z.string() }))
     .query(async ({ input }) => {
-      const { id } = input;
+      const { photoId } = input;
 
-      return await db.photo.findFirst({
-        where: { id },
+      const photo = await db.photo.findFirst({
+        where: { id: photoId },
       });
+
+      return photo;
     }),
   checkPhotoInCollections: privateProcedure
     .input(z.object({ photoId: z.string() }))
@@ -441,5 +443,23 @@ export const appRouter = router({
 
     return { success: true };
   }),
+  incrDownload: publicProcedure
+    .input(z.object({ photoId: z.string() }))
+    .mutation(async ({ input }) => {
+      const { photoId } = input;
+
+      await db.photo.update({
+        where: {
+          id: photoId,
+        },
+        data: {
+          statDownload: {
+            increment: 1,
+          },
+        },
+      });
+
+      return { success: true };
+    }),
 });
 export type AppRouter = typeof appRouter;

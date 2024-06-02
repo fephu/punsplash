@@ -19,7 +19,7 @@ interface CollectionDialogProps {
 const CollectionDialog = ({ photoId, userId }: CollectionDialogProps) => {
   const router = useRouter();
 
-  const { data: photo } = trpc.getPhotoByPhotoId.useQuery({ id: photoId });
+  const { data: photo } = trpc.getPhotoByPhotoId.useQuery({ photoId });
 
   const { data: collections } = trpc.getAllCollectionsOfUser.useQuery({
     userId,
