@@ -12,6 +12,7 @@ import {
   Ellipsis,
   Forward,
   Ghost,
+  Loader2,
   Lock,
   MapPin,
   Share,
@@ -119,7 +120,11 @@ const PhotoDialog = ({
               className="flex items-center shadow-md"
             >
               Download
-              <ChevronDown className="h-4 w-4 ml-1" />
+              {isDownloading ? (
+                <Loader2 className="w-4 h-4 ml-1 animate-spin" />
+              ) : (
+                <ChevronDown className="h-4 w-4 ml-1" />
+              )}
             </Button>
           ) : (
             <Link href={"/pricing"} className={buttonVariants({ size: "sm" })}>
