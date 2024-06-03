@@ -13,11 +13,9 @@ import { useCallback, useRef, useState, useTransition } from "react";
 import { Input } from "./ui/input";
 import { Button, buttonVariants } from "./ui/button";
 import { useRouter } from "next/navigation";
-import VisualSearch from "./search/VisualSearch";
 import Link from "next/link";
 import { trpc } from "@/app/_trpc/client";
 import { Feature } from "@prisma/client";
-import Image from "next/image";
 
 interface SearchBarProps {
   userId: string;
@@ -81,7 +79,7 @@ const SearchBar = ({ userId }: SearchBarProps) => {
         {query.length > 0 && (
           <Button
             disabled={isSearching}
-            className="absolute top-1 right-10"
+            className="absolute top-1 right-1"
             size={"sm"}
             variant={"ghost"}
             onClick={() => setQuery("")}
@@ -114,11 +112,15 @@ const SearchBar = ({ userId }: SearchBarProps) => {
                     {recentSearches.map((recent: any) => (
                       <Link
                         key={recent.userId}
-                        href={"/s/photos/Sea"}
+                        href={`/s/photos/${recent.keyword}`}
                         className={buttonVariants({
                           variant: "outline",
                           size: "sm",
                         })}
+                        onClick={() => {
+                          setQuery(recent.keyword);
+                          setIsOpen(false);
+                        }}
                       >
                         {recent.keyword}
                       </Link>
@@ -186,9 +188,9 @@ const SearchBar = ({ userId }: SearchBarProps) => {
           </div>
         )}
 
-        <div className="hidden lg:block">
+        {/* <div className="hidden lg:block">
           <VisualSearch />
-        </div>
+        </div> */}
       </div>
     </div>
   );
