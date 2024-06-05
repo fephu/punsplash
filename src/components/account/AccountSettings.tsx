@@ -206,7 +206,7 @@ const AccountSettings = ({ userId }: AccountSettingsProps) => {
                     {...register("name")}
                     id="name"
                     className="col-span-2 h-10"
-                    value={user?.name ?? ""}
+                    defaultValue={user?.name ?? ""}
                   />
                   {errors?.name && (
                     <p className="text-sm text-red-500">

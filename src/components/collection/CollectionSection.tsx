@@ -34,6 +34,10 @@ const CollectionSection = ({
   const { data: collection } = trpc.collectionRouter.getCollectionById.useQuery(
     {
       id: collectionId,
+    },
+    {
+      staleTime: 1000 * 60 * 5, // 5 phút trước khi dữ liệu trở nên "stale"
+      cacheTime: 1000 * 60 * 10, // 10 phút trước khi dữ liệu bị xóa khỏi cache
     }
   );
 

@@ -1,8 +1,8 @@
 import { db } from "@/db";
 import { getAuthSession } from "@/lib/auth";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
-import { load as cocoSSDLoad } from "@tensorflow-models/coco-ssd";
-import * as tf from "@tensorflow/tfjs";
+import sharp from "sharp";
+import { processImage } from "@/lib/sharp";
 
 const f = createUploadthing();
 
@@ -19,32 +19,34 @@ export const ourFileRouter = {
       return { userId: user.id };
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      const net = await cocoSSDLoad();
+      // const net = await cocoSSDLoad();
 
-      const response = await fetch(file.url);
-      const blob = await response.blob();
-      const imageElement = await createImageBitmap(blob);
+      // const response = await fetch(file.url);
+      // const blob = await response.blob();
+      // const imageElement = await createImageBitmap(blob);
 
-      const tensor = tf.browser.fromPixels(imageElement);
+      // const tensor = tf.browser.fromPixels(imageElement);
 
-      const predictions = await net.detect(tensor);
+      // const predictions = await net.detect(tensor);
 
-      predictions.forEach((prediction) => {
-        console.log(
-          `Đối tượng: ${
-            prediction.class
-          }, Độ tin cậy: ${prediction.score.toFixed(2)}, Vị trí: ${
-            prediction.bbox
-          }`
-        );
-      });
+      // predictions.forEach((prediction) => {
+      //   console.log(
+      //     `Đối tượng: ${
+      //       prediction.class
+      //     }, Độ tin cậy: ${prediction.score.toFixed(2)}, Vị trí: ${
+      //       prediction.bbox
+      //     }`
+      //   );
+      // });
 
+      // processImage("/6.jpg");
       const createdPhoto = await db.photo.create({
         data: {
           userId: metadata.userId,
           url: file.url,
           statDownload: 0,
           statViews: 0,
+
           // url: `https://uploadthing-prod.s3.us-west-2.amazonaws.com/${file.key}`,
         },
       });

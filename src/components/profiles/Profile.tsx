@@ -21,11 +21,13 @@ import {
 import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
 import { Button, buttonVariants } from "../ui/button";
-import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { User } from "@prisma/client";
 import ConnectWith from "./ConnectWith";
 import axios, { AxiosError } from "axios";
 import { z } from "zod";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
 interface ProfileProps {
   children: React.ReactNode;
@@ -35,6 +37,8 @@ interface ProfileProps {
 }
 
 const Profile = ({ children, user, userId, isFollowed }: ProfileProps) => {
+  const pathname = usePathname();
+
   const follow = async (email: string) => {
     try {
       await axios.post("/api/follow/add", {
@@ -177,6 +181,12 @@ const Profile = ({ children, user, userId, isFollowed }: ProfileProps) => {
           href={`/profile/${user?.username}`}
           className={buttonVariants({
             variant: "ghost",
+            className:
+              pathname.includes(`/profile/${user?.username}/likes`) === false &&
+              pathname.includes(`/profile/${user?.username}/collections`) ===
+                false
+                ? "border-b-2 border-gray-600 rounded-none"
+                : "",
           })}
         >
           <ImageIcon className="w-4 h-4 mr-2" />
@@ -187,6 +197,9 @@ const Profile = ({ children, user, userId, isFollowed }: ProfileProps) => {
           href={`/profile/${user?.username}/likes`}
           className={buttonVariants({
             variant: "ghost",
+            className: pathname.includes(`/profile/${user?.username}/likes`)
+              ? "border-b-2 border-gray-600 rounded-none"
+              : "",
           })}
         >
           <Heart className="w-4 h-4 mr-2" />
@@ -197,6 +210,11 @@ const Profile = ({ children, user, userId, isFollowed }: ProfileProps) => {
           href={`/profile/${user?.username}/collections`}
           className={buttonVariants({
             variant: "ghost",
+            className: pathname.includes(
+              `/profile/${user?.username}/collections`
+            )
+              ? "border-b-2 border-gray-600 rounded-none"
+              : "",
           })}
         >
           <Folder className="w-4 h-4 mr-2" />

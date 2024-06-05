@@ -15,6 +15,18 @@ export const photoRouter = router({
         },
       });
 
+      await db.keyword.deleteMany({
+        where: {
+          photoId: id,
+        },
+      });
+
+      await db.photoFeature.deleteMany({
+        where: {
+          photoId: id,
+        },
+      });
+
       await db.photo.delete({
         where: { id, userId },
       });

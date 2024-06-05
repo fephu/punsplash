@@ -11,10 +11,18 @@ const Description = () => {
         <Link href={"/blog"}>
           <Icons.logo className="w-10 h-10" />
         </Link>
-        <Link href={"/"} className={buttonVariants({ variant: "ghost" })}>
-          Home
-          <ArrowUpRight className="w-4 h-4 ml-1" />
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link href={"/"} className={buttonVariants({ variant: "ghost" })}>
+            Home
+            <ArrowUpRight className="w-4 h-4 ml-1" />
+          </Link>
+          <Link
+            href={"/blog/create"}
+            className={buttonVariants({ variant: "outline" })}
+          >
+            Create
+          </Link>
+        </div>
       </div>
       <div className="flex justify-center mt-20 mb-40">
         <p className="text-[7.5vw] uppercase text-center max-w-[50vw] leading-none">

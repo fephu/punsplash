@@ -78,6 +78,7 @@
     "react-tagsinput": "^3.20.3",
     "react-textarea-autosize": "^8.5.3",
     "sass": "^1.75.0",
+    "sharp": "^0.33.4",
     "sonner": "^1.4.41",
     "stripe": "^15.7.0",
     "tailwind-merge": "^2.2.2",
