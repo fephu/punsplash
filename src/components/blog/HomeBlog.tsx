@@ -97,7 +97,6 @@ const HomeBlog = ({ initialBlogs }: HomeBlogProps) => {
             <Loader2 className="w-6 h-6 text-zinc-500 animate-spin" />
           </li>
         )}
-        '
       </div>
     </main>
   );
