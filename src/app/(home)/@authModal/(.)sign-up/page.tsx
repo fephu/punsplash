@@ -1,4 +1,5 @@
 import CloseModal from "@/components/auth/CloseModal";
+import SignUp from "@/components/auth/SignUp";
 
 const Page = () => {
   return (
@@ -9,7 +10,7 @@ const Page = () => {
             <CloseModal />
           </div>
 
-          {/* <SignUp /> */}
+          <SignUp />
         </div>
       </div>
     </div>

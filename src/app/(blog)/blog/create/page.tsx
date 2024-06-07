@@ -22,7 +22,7 @@ const Page = async () => {
             Home
           </Link>
           <div className="-ml-2 mt-4 flex flex-wrap items-baseline">
-            <h3 className="ml-2 mt-2 text-5xl font-semibold leading-6 text-gray-900">
+            <h3 className="ml-2 mt-2 text-4xl font-semibold leading-6 text-gray-900">
               Create Blog
             </h3>
           </div>
