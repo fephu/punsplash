@@ -221,17 +221,6 @@ const Profile = ({ children, user, userId, isFollowed }: ProfileProps) => {
           Collections
           <span className="ml-1.5 hidden md:block">{countOfCollections}</span>
         </Link>
-        {userId && (
-          <Link
-            href={`/profile/${user?.username}/stats`}
-            className={buttonVariants({
-              variant: "ghost",
-            })}
-          >
-            <BarChart2 className="w-4 h-4 mr-2" />
-            Stats
-          </Link>
-        )}
       </div>
       {children}
     </>

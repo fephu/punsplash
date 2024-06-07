@@ -65,6 +65,17 @@ model User {
   Collection     Collection[]
   LikedPhoto     LikedPhoto[]
   RecentSearches RecentSearches[]
+  Blog           Blog[]
+}
+
+model Blog {
+  id        String   @id @default(cuid())
+  title     String
+  content   Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User?    @relation(fields: [authorId], references: [id])
+  authorId  String?
 }
 
 model RecentSearches {

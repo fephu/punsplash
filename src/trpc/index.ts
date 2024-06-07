@@ -9,11 +9,13 @@ import { photoRouter } from "./photo-router";
 import { PLANS } from "@/config/stripe";
 import { getUserSubscriptionPlan, stripe } from "@/lib/stripe";
 import { absoluteUrl } from "@/lib/utils";
+import { blogRouter } from "./blog-router";
 export const appRouter = router({
   profileRouter: profileRouter,
   collectionRouter: collectionRouter,
   featureRouter: featureRouter,
   photoRouter: photoRouter,
+  blogRouter: blogRouter,
   getPhoto: privateProcedure
     .input(z.object({ key: z.string() }))
     .mutation(async ({ ctx, input }) => {

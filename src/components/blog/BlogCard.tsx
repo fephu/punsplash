@@ -1,8 +1,21 @@
 import Image from "next/image";
 import { format } from "date-fns";
 import Link from "next/link";
+import { trpc } from "@/app/_trpc/client";
+import { formatTimeToNow } from "@/lib/utils";
+import { useRef } from "react";
 
-const BlogCard = () => {
+interface BlogCardProps {
+  title: string;
+  authorId: string;
+  createdAt: Date;
+  content: any;
+}
+
+const BlogCard = ({ authorId, content, createdAt, title }: BlogCardProps) => {
+  const { data: author } = trpc.getUserById.useQuery({ userId: authorId });
+
+  const pRef = useRef<HTMLParagraphElement>(null);
   return (
     <Link
       href={"/blog/6-million-images"}

@@ -70,6 +70,16 @@ export const ourFileRouter = {
         },
       });
     }),
+  imageBlog: f({ image: { maxFileSize: "4MB" } })
+    .middleware(async (req) => {
+      const session = await getAuthSession();
+      const user = session?.user;
+
+      if (!user || !user.id) throw Error("Unauthorized");
+
+      return { userId: user.id };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {}),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;
