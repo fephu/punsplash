@@ -4,6 +4,7 @@ import Link from "next/link";
 import { trpc } from "@/app/_trpc/client";
 import { formatTimeToNow } from "@/lib/utils";
 import { useRef } from "react";
+import EditorOutput from "./EditorOutput";
 
 interface BlogCardProps {
   title: string;
@@ -32,12 +33,23 @@ const BlogCard = ({ authorId, content, createdAt, title }: BlogCardProps) => {
       <div className="flex flex-col justify-between p-4 h-[10rem]">
         <div className="flex flex-col gap-2">
           <span className="text-sm text-muted-foreground">Blog</span>
-          <span className="text-2xl font-semibold">6 Million Images</span>
+          <span className="text-2xl font-semibold">{title}</span>
+
+          <div
+            className="relative text-sm max-h-40 w-full overflow-clip"
+            ref={pRef}
+          >
+            <EditorOutput content={content} />
+            {pRef.current?.clientHeight === 160 ? (
+              // blur bottom if content is too long
+              <div className="absolute bottom-0 left-0 h-24 w-full bg-gradient-to-t from-white to-transparent"></div>
+            ) : null}
+          </div>
         </div>
         <div className="text-sm flex items-center gap-2">
           <span className="font-semibold">Tuan Phu</span>{" "}
           <span className="text-muted-foreground">
-            {format(Date.now(), "dd/MM/yyyy")}
+            {formatTimeToNow(new Date(createdAt))}
           </span>
         </div>
       </div>
