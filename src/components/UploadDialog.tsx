@@ -10,7 +10,6 @@ import { trpc } from "@/app/_trpc/client";
 import { Progress } from "./ui/progress";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
-import { processImage } from "@/lib/sharp";
 
 interface UploadDropzoneProps {
   username: string;
