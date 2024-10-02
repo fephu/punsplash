@@ -1,8 +1,6 @@
 import { db } from "@/db";
 import { getAuthSession } from "@/lib/auth";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
-import sharp from "sharp";
-import { processImage } from "@/lib/sharp";
 
 const f = createUploadthing();
 
