@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-export const SignInValidator = z.object({
+export const SignUpValidator = z.object({
+  name: z.string(),
   email: z.string().email(),
   password: z
     .string()
@@ -8,4 +9,4 @@ export const SignInValidator = z.object({
     .max(20, { message: "Password less than 20 leters" }),
 });
 
-export type TSignInValidator = z.infer<typeof SignInValidator>;
+export type TSignUpValidator = z.infer<typeof SignUpValidator>;

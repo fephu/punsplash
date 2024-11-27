@@ -10,25 +10,32 @@ import { Input } from "../ui/input";
 import { Separator } from "../ui/separator";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
-import {
-  SignInValidator,
-  TSignInValidator,
-} from "@/lib/validators/sign-in-validators";
 import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
+import {
+  SignUpValidator,
+  TSignUpValidator,
+} from "@/lib/validators/sign-up-validators";
+import { trpc } from "@/app/_trpc/client";
 
 interface SignUpAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const SignUpAuthForm = ({ className, ...props }: SignUpAuthFormProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const { mutate: createUser } = trpc.createUser.useMutation({
+    onSuccess: () => {
+      toast.success("Sign up successfully.");
+    },
+  });
+
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<TSignInValidator>({
-    resolver: zodResolver(SignInValidator),
+  } = useForm<TSignUpValidator>({
+    resolver: zodResolver(SignUpValidator),
   });
 
   const loginWithGoogle = async () => {
@@ -43,8 +50,8 @@ const SignUpAuthForm = ({ className, ...props }: SignUpAuthFormProps) => {
     }
   };
 
-  const onSubmit = () => {
-    toast.success("Ok");
+  const onSubmit = ({ email, name, password }: TSignUpValidator) => {
+    createUser({ email, password, name });
   };
 
   return (
@@ -52,14 +59,21 @@ const SignUpAuthForm = ({ className, ...props }: SignUpAuthFormProps) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid gap-4">
           <div className="flex flex-col items-start gap-2">
-            <Label htmlFor="username">Username</Label>
+            <Label htmlFor="name">Name</Label>
+            <Input {...register("name")} id="name" className="col-span-2 h-8" />
+            {errors?.name && (
+              <p className="text-xs text-red-500">{errors.name.message}</p>
+            )}
+          </div>
+          <div className="flex flex-col items-start gap-2">
+            <Label htmlFor="email">Email</Label>
             <Input
-              {...register("username")}
-              id="username"
+              {...register("email")}
+              id="email"
               className="col-span-2 h-8"
             />
-            {errors?.username && (
-              <p className="text-xs text-red-500">{errors.username.message}</p>
+            {errors?.email && (
+              <p className="text-xs text-red-500">{errors.email.message}</p>
             )}
           </div>
           <div className="flex flex-col items-start gap-2">
@@ -68,6 +82,7 @@ const SignUpAuthForm = ({ className, ...props }: SignUpAuthFormProps) => {
               {...register("password")}
               id="password"
               className="col-span-2 h-8"
+              type="password"
             />
             {errors?.password && (
               <p className="text-xs text-red-500">{errors.password.message}</p>

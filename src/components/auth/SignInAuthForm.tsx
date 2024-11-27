@@ -43,7 +43,8 @@ const SignInAuthForm = ({ className, ...props }: SignInAuthFormProps) => {
     }
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
+    await signIn("credentials");
     toast.success("Ok");
   };
 
@@ -52,14 +53,14 @@ const SignInAuthForm = ({ className, ...props }: SignInAuthFormProps) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid gap-4">
           <div className="flex flex-col items-start gap-2">
-            <Label htmlFor="username">Username</Label>
+            <Label htmlFor="username">Email</Label>
             <Input
-              {...register("username")}
+              {...register("email")}
               id="username"
               className="col-span-2 h-8"
             />
-            {errors?.username && (
-              <p className="text-xs text-red-500">{errors.username.message}</p>
+            {errors?.email && (
+              <p className="text-xs text-red-500">{errors.email.message}</p>
             )}
           </div>
           <div className="flex flex-col items-start gap-2">

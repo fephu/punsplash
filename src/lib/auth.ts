@@ -5,10 +5,9 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { nanoid } from "nanoid";
 import { db, dbRedis } from "@/db";
-import { fetchRedis } from "@/helpers/redis";
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(db) && UpstashRedisAdapter(dbRedis),
+  adapter: PrismaAdapter(db),
   session: {
     strategy: "jwt",
   },
@@ -23,20 +22,18 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        username: { label: "Username", type: "text" },
+        email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        const res = await fetch("/your/endpoint", {
-          method: "POST",
-          body: JSON.stringify(credentials),
-          headers: { "Content-Type": "application/json" },
+        const dbUser = await db.user.findFirst({
+          where: {
+            email: credentials?.email,
+          },
         });
 
-        const user = await res.json();
-
-        if (res.ok && user) {
-          return user;
+        if (dbUser) {
+          return dbUser;
         }
         // Return null if user data could not be retrieved
         return null;

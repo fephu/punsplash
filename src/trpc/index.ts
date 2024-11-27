@@ -1,7 +1,7 @@
 import { privateProcedure, publicProcedure, router } from "./trpc";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { db } from "@/db";
+import { db, dbRedis } from "@/db";
 import { profileRouter } from "./profile-router";
 import { collectionRouter } from "./collection-router";
 import { featureRouter } from "./feature-router";
@@ -10,6 +10,7 @@ import { PLANS } from "@/config/stripe";
 import { getUserSubscriptionPlan, stripe } from "@/lib/stripe";
 import { absoluteUrl } from "@/lib/utils";
 import { blogRouter } from "./blog-router";
+
 export const appRouter = router({
   profileRouter: profileRouter,
   collectionRouter: collectionRouter,
@@ -30,6 +31,39 @@ export const appRouter = router({
       if (!photo) throw new TRPCError({ code: "NOT_FOUND" });
 
       return photo;
+    }),
+  createUser: publicProcedure
+    .input(
+      z.object({ name: z.string(), email: z.string(), password: z.string() })
+    )
+    .mutation(async ({ input }) => {
+      const { name, email, password } = input;
+
+      const emailExist = await db.user.findFirst({
+        where: {
+          email,
+        },
+      });
+
+      if (emailExist) {
+        throw new TRPCError({ code: "CONFLICT", message: "Email is exist." });
+      }
+
+      const user = await db.user.create({
+        data: {
+          name,
+          password,
+          email,
+        },
+      });
+
+      await dbRedis.sadd(`user:email:${email}`);
+
+      if (!user) {
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      }
+
+      return user;
     }),
   getUserById: publicProcedure
     .input(z.object({ userId: z.string() }))
