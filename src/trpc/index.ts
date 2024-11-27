@@ -57,6 +57,8 @@ export const appRouter = router({
         },
       });
 
+      await dbRedis.sadd(`user:email:${email}`);
+
       if (!user) {
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
       }

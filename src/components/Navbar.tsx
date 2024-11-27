@@ -66,9 +66,20 @@ const Navbar = async () => {
           >
             Pricing
           </Link>
+
+          {session?.user ? (
+            <UploadDialog username={session.user.username ?? ""} />
+          ) : (
+            <Link
+              href={"/sign-in"}
+              className={buttonVariants({ variant: "outline" })}
+            >
+              Submit a photo
+            </Link>
+          )}
+
           {session?.user ? (
             <>
-              <UploadDialog username={session.user.username ?? ""} />
               <BellNotification
                 unseenNotificationCount={unseenNotificationCount}
               />
