@@ -4,7 +4,7 @@ import { UpstashRedisAdapter } from "@next-auth/upstash-redis-adapter";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { nanoid } from "nanoid";
-import { db, dbRedis } from "@/db";
+import { db } from "@/db";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db),
